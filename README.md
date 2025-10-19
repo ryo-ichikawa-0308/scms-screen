@@ -1,4 +1,4 @@
-# scms-screen
+# scms-screen(スケルトン)
 
 本作品群は、[simple-contract-management-system](https://github.com/ryo-ichikawa-0308/simple-contract-management-system)の画面資産です。
 
