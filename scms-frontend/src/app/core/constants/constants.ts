@@ -16,7 +16,21 @@ export const AUTH_ENDPOINTS = {
  */
 export const USER_SERVICE_ENDPOINTS = {
   // サービス一覧取得 (POST /services)
-  LIST: `${BASE_URL}/user-services`,
+  LIST: `${BASE_URL}/user-services/list`,
   // サービス詳細取得 (GET /services/{id})
   DETAIL: (id: string) => `${BASE_URL}/user-services/${id}`,
+};
+
+/**
+ * 契約関連のエンドポイント
+ */
+ export const CONTRACT_ENDPOINTS = {
+  // 契約一覧取得 (POST /services)
+  LIST: `${BASE_URL}/contracts/list`,
+  // 契約詳細取得 (GET /services/{id})
+  DETAIL: (id: string) => `${BASE_URL}/contracts/${id}`,
+  // 契約 (POST /services/{id})
+  CREATE: `${BASE_URL}/contracts`,
+  // 解約 (PATCH /services/{id})
+  CANCEL: (id: string) => `${BASE_URL}/contracts/${id}`,
 };

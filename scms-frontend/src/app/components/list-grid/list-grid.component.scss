@@ -1,0 +1,42 @@
+.list-grid-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+
+  th,
+  td {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .no-data {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    background-color: #fff;
+  }
+  tbody {
+    .clickable {
+      cursor: pointer;
+      &:hover {
+        background-color: #e6f7ff;
+        transition: background-color 0.2s ease;
+      }
+    }
+  }
+}
