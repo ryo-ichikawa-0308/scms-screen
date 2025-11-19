@@ -1,7 +1,7 @@
 export const ACCESS_TOKEN_KEY = 'accessToken';
 export const   ACCESS_TOKEN_EXPIRES_KEY = 'accessTokenExpires';
 
-const BASE_URL = 'http://api:3000/api/v1';
+const BASE_URL = '/api/v1';
 export const AUTH_ENDPOINTS = {
   // ログイン (POST /auth/login)
   LOGIN: `${BASE_URL}/auth/login`,
