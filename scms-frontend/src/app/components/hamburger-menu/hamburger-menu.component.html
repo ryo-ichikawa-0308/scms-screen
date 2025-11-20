@@ -1,0 +1,58 @@
+<!-- メニューコンテナ: 未ログイン時は完全に非表示 -->
+<div *ngIf="isLoggedIn()" class="relative">
+      
+  <!-- ハンバーガーアイコン (ボタン) -->
+  <button 
+    (click)="toggleMenu()"
+    class="p-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+    <!-- Lucide icon: Menu -->
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="24" 
+      height="24" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      stroke-width="2" 
+      stroke-linecap="round" 
+      stroke-linejoin="round">
+      <line x1="4" x2="20" y1="12" y2="12"></line>
+      <line x1="4" x2="20" y1="6" y2="6"></line>
+      <line x1="4" x2="20" y1="18" y2="18"></line>
+    </svg>
+  </button>
+
+  <!-- メニューパネル (開閉状態に応じて表示/非表示) -->
+  <div 
+    *ngIf="isMenuOpen()"
+    class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 
+           transform transition-all duration-300 ease-in-out origin-top-right
+           md:w-72 custom-menu-panel">
+    
+    <div class="p-4 space-y-2">
+      <!-- メニュー項目のリスト -->
+      @for (item of menuItems(); track item.label) {
+        <a 
+          (click)="executeAction(item.action)"
+          class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition duration-150">
+          
+          <!-- item.iconKey に基づいて menuIcons から SVG 文字列を取得 -->
+          <div 
+            class="mr-3 text-xl" 
+            [innerHTML]="menuIcons[item.iconKey]">
+          </div>
+          
+          <!-- リンク文字列 -->
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </div>
+  </div>
+  
+  <!-- メニューの外側をクリックしたときに閉じるためのオーバーレイ -->
+  <div 
+    *ngIf="isMenuOpen()"
+    (click)="closeMenu()"
+    class="fixed inset-0 z-40">
+  </div>
+</div>

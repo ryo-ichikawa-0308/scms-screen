@@ -63,7 +63,6 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         // ログイン成功: サービス一覧画面へ遷移
-        // NOTE: ルーティングパスは app.routes.ts で定義されたものに修正してください
         this.router.navigate(['/service-list']);
       },
       error: (err) => {

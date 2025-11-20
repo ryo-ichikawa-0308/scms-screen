@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PagingComponent, PagingConfig } from '../paging/paging.component';
 
 // ヘッダー定義の型を拡張
-export interface GridHeader {
-  key: string;
+export interface GridHeader<T extends object> {
+  key: keyof T;
   label: string;
   hidden?: boolean; // 新規追加: trueの場合、列を非表示にする
 }
@@ -20,7 +20,7 @@ export class ListGridComponent<T extends object> {
   @Input() data: T[] = [];
 
   // 拡張された型を使用
-  @Input() headers: GridHeader[] = [];
+  @Input() headers: GridHeader<T>[] = [];
 
   @Input() pagingConfig!: PagingConfig;
 
@@ -32,7 +32,7 @@ export class ListGridComponent<T extends object> {
   @Output() pageChange = new EventEmitter<number>();
 
   // テンプレートで表示するヘッダーのみをフィルタリング
-  get visibleHeaders(): GridHeader[] {
+  get visibleHeaders(): GridHeader<T>[] {
     return this.headers.filter((header) => !header.hidden);
   }
 

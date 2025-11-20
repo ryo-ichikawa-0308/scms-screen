@@ -48,7 +48,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             }),
             catchError((refreshError: Observable<HttpEvent<unknown>>) => {
               // リフレッシュ失敗 -> ログアウト
-              router.navigate(['/login']);
+              void router.navigate(['/login']);
               return throwError(() => refreshError);
             }),
           );

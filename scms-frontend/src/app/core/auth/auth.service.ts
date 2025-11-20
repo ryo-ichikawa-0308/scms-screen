@@ -29,13 +29,8 @@ export class AuthService {
     // ログインAPIをPOSTで呼び出す
     return this.http.post<LoginResponse>(this.LOGIN_URL, credentials).pipe(
       tap((response) => {
-        // ログイン成功時
-
-        // 1. アクセストークンをセッションストレージに保存
+        // アクセストークンをセッションストレージに保存
         this.saveAccessToken(response.token);
-
-        // 2. リフレッシュトークンはサーバー側が設定したHTTP-Only Cookieで返されることを想定し、
-        //    フロントエンドでは自動的にブラウザが保存するため、ここでは特別な処理は不要。
       }),
     );
   }
@@ -75,7 +70,6 @@ export class AuthService {
     // 多重呼び出し防止と Subject の利用
     if (this.isRefreshing) {
       // リフレッシュ中の場合は、Subject が発火するまで待機
-      // (この処理はインターセプター側で行います)
       return throwError(() => new Error('Token refresh already in progress.'));
     }
 
@@ -96,10 +90,14 @@ export class AuthService {
         // 失敗時
         this.isRefreshing = false;
         this.refreshTokenSubject.next(null); // 通知をリセット
-        // this.logout(); // 強制ログアウト
+        this.logout(); // 強制ログアウト
         return throwError(() => err);
       }),
     );
+  }
+
+  logout() {
+    throw new Error('Method not implemented.');
   }
 
   // Subject を外部に公開するゲッター

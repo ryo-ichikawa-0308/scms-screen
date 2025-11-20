@@ -17,7 +17,7 @@ import { LabelComponent } from '../../components/label/label.component';
     ButtonComponent,
     LabelComponent,
   ],
-  templateUrl: './service-list.html',
-  styleUrls: ['./service-list.scss'],
+  templateUrl: './contract-detail.html',
+  styleUrls: ['./contract-detail.scss'],
 })
-export class ServiceListComponent {}
+export class ContractDetailComponent {}
