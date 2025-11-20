@@ -1,5 +1,5 @@
 export const ACCESS_TOKEN_KEY = 'accessToken';
-export const   ACCESS_TOKEN_EXPIRES_KEY = 'accessTokenExpires';
+export const ACCESS_TOKEN_EXPIRES_KEY = 'accessTokenExpires';
 
 const BASE_URL = '/api/v1';
 export const AUTH_ENDPOINTS = {
@@ -24,7 +24,7 @@ export const USER_SERVICE_ENDPOINTS = {
 /**
  * 契約関連のエンドポイント
  */
- export const CONTRACT_ENDPOINTS = {
+export const CONTRACT_ENDPOINTS = {
   // 契約一覧取得 (POST /services)
   LIST: `${BASE_URL}/contracts/list`,
   // 契約詳細取得 (GET /services/{id})

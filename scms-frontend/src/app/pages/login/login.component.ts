@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common'; // *ngIf のために必要
 
 // 作成/既存のコンポーネントとサービスをインポート
 import { AuthService } from '../../core/auth/auth.service';
-import { HeaderComponent } from '../../components/header/header.component'; 
+import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { ButtonComponent } from '../../components/button/button.component'; 
-import { LabelComponent } from '../../components/label/label.component'; 
+import { ButtonComponent } from '../../components/button/button.component';
+import { LabelComponent } from '../../components/label/label.component';
+import { LoginRequest } from '../../core/models/auth.model';
 // TextboxComponentは、ここでは標準のinputタグを使用します
 
 @Component({
@@ -16,27 +17,27 @@ import { LabelComponent } from '../../components/label/label.component';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule, 
-    HeaderComponent, 
-    FooterComponent, 
+    FormsModule,
+    HeaderComponent,
+    FooterComponent,
     ButtonComponent,
     LabelComponent,
   ],
   templateUrl: './login.html',
-  styleUrls: ['./login.scss'] 
+  styleUrls: ['./login.scss'],
 })
 export class LoginComponent {
   // フォームデータとバインドするプロパティ
   email: string = '';
   password: string = '';
-  
+
   // メッセージ表示用プロパティ
   errorMessage: string | null = null;
   isError: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   /**
@@ -53,9 +54,9 @@ export class LoginComponent {
       return;
     }
 
-    const credentials = {
+    const credentials: LoginRequest = {
       email: this.email,
-      password: this.password
+      password: this.password,
     };
 
     // 認証サービスを呼び出し
@@ -63,17 +64,19 @@ export class LoginComponent {
       next: () => {
         // ログイン成功: サービス一覧画面へ遷移
         // NOTE: ルーティングパスは app.routes.ts で定義されたものに修正してください
-        this.router.navigate(['/service-list']); 
+        this.router.navigate(['/service-list']);
       },
       error: (err) => {
         // ログイン失敗
         console.error('ログイン処理中にエラーが発生しました', err);
-        
+
         // エラーメッセージの表示
         // バックエンドからのエラーメッセージがあればそれを優先し、なければ汎用メッセージを表示
-        this.errorMessage = err.error?.message || 'ログインに失敗しました。ユーザーIDまたはパスワードをご確認ください。';
+        this.errorMessage =
+          err.error?.message ||
+          'ログインに失敗しました。ユーザーIDまたはパスワードをご確認ください。';
         this.isError = true;
-      }
+      },
     });
   }
 }

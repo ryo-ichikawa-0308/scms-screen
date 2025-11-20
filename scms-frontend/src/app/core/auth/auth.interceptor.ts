@@ -46,11 +46,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               // 新しいトークンで元のリクエストを再試行
               return next(addToken(req, response.accessToken));
             }),
-            catchError((refreshError) => {
+            catchError((refreshError: Observable<HttpEvent<unknown>>) => {
               // リフレッシュ失敗 -> ログアウト
               router.navigate(['/login']);
               return throwError(() => refreshError);
-            })
+            }),
           );
         }
 
@@ -63,14 +63,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             take(1),
             // 新しいトークンで元のリクエストを再試行
             switchMap((newToken) => {
-              return next(addToken(req, newToken!));
-            })
+              return next(addToken(req, newToken));
+            }),
           );
         }
       }
 
       // 401以外のエラー、またはトークンが存在しない場合
       return throwError(() => error);
-    })
+    }),
   );
 };

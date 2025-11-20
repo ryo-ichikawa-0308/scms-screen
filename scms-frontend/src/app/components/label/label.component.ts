@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-label',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './label.component.html', 
-  styleUrls: ['./label.component.scss'] 
+  templateUrl: './label.component.html',
+  styleUrls: ['./label.component.scss'],
 })
 export class LabelComponent {
   @Input() message: string | null = null;

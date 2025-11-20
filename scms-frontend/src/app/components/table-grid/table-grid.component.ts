@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 export interface DetailItem {
   label: string;
-  value: any;
-  key: string;      // 内部的なキー（IDなど）
+  value: string | number | object;
+  key: string; // 内部的なキー（IDなど）
   hidden?: boolean; // trueの場合、行全体を非表示にする
 }
 
@@ -13,7 +13,7 @@ export interface DetailItem {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './table-grid.component.html',
-  styleUrls: ['./table-grid.component.scss']
+  styleUrls: ['./table-grid.component.scss'],
 })
 export class TableGridComponent {
   @Input() data: DetailItem[] = [];
@@ -26,7 +26,7 @@ export class TableGridComponent {
   get visibleData(): DetailItem[] {
     // 描画前に hiddenKeys を更新しつつ、表示項目のみを返す
     this.hiddenKeys = {};
-    return this.data.filter(item => {
+    return this.data.filter((item: DetailItem) => {
       if (item.hidden && item.key) {
         // 非表示かつキーが設定されている場合は hiddenKeys に格納
         this.hiddenKeys[item.key] = item.value;

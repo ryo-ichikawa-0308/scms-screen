@@ -4,19 +4,19 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-textbox',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule],
   templateUrl: './textbox.component.html',
-  styleUrls: ['./textbox.component.scss'] 
+  styleUrls: ['./textbox.component.scss'],
 })
 export class TextboxComponent {
   // 親コンポーネントから受け取る値
   @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' = 'text';
   @Input() placeholder: string = '';
-  
+
   // フォームコントロールの値 (ngModelとバインド)
   @Input() value: string = '';
-  
+
   // 親コンポーネントに変更を通知するためのイベント
   @Output() valueChange = new EventEmitter<string>();
 
