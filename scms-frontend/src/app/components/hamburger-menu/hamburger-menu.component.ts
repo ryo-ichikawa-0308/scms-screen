@@ -1,10 +1,6 @@
 import { Component, Input, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// 新しい設定ファイルから MenuItem 型と MENU_ICONS をインポート
-import { MenuItem, MENU_ICONS } from '../../core/models/hamburger-menu.model';
-
-// 以前の MenuItem 定義は削除されました
-
+import { MenuItem, MENU_ICONS } from 'src/app/models/hamburger-menu.model';
 @Component({
   selector: 'app-hamburger-menu',
   standalone: true,
@@ -53,9 +49,7 @@ export class HamburgerMenuComponent {
    * @param action 実行する関数
    */
   executeAction(action: () => void): void {
-    // 実行前にメニューを閉じる
     this.closeMenu();
-    // 外部から渡された関数を実行
     action();
   }
 }

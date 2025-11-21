@@ -1,0 +1,163 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.service-list-main {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+// ------------------------------------
+// 検索フォームエリア
+// ------------------------------------
+
+.search-form-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: center;
+      gap: 15px;
+    }
+  }
+
+  .input-label {
+    font-weight: 600;
+    min-width: 100px;
+    margin-bottom: 8px;
+
+    @media (min-width: 768px) {
+      margin-bottom: 0;
+    }
+  }
+
+  .input-field {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+  }
+
+  .search-button {
+    width: 100%;
+    margin-top: 15px;
+    @media (min-width: 768px) {
+      width: auto;
+      margin-left: auto;
+      margin-top: 0;
+    }
+  }
+}
+
+// ------------------------------------
+// リストグリッドエリア
+// ------------------------------------
+
+.grid-area {
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+}
+
+// ------------------------------------
+// モーダルスタイル
+// ------------------------------------
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 550px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(0);
+  transition: transform 0.3s ease-out;
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #6b7280;
+      cursor: pointer;
+      transition: color 0.2s;
+      &:hover {
+        color: #ef4444;
+      }
+    }
+  }
+
+  .modal-body {
+    p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      strong {
+        font-weight: 600;
+        color: #374151;
+      }
+    }
+    .description {
+      border-top: 1px dashed #e5e7eb;
+      padding-top: 10px;
+      margin-top: 15px;
+    }
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 15px;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 20px;
+  }
+}

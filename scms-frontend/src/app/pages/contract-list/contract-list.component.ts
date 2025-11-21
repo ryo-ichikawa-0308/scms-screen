@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { FooterComponent } from '../../components/footer/footer.component';
+import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from '../../components/button/button.component';
-import { HeaderComponent } from '../../components/header/header.component';
-import { LabelComponent } from '../../components/label/label.component';
+import { ButtonComponent } from 'src/app/components/button/button.component';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+import { LabelComponent } from 'src/app/components/label/label.component';
 
 @Component({
-  selector: 'app-login',
+  selector: 'contract-list',
   standalone: true,
   imports: [
     CommonModule,

@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
-import { ACCESS_TOKEN_EXPIRES_KEY, ACCESS_TOKEN_KEY, AUTH_ENDPOINTS } from '../constants/constants';
-import { AccessToken, LoginRequest, LoginResponse } from '../models/auth.model';
+import {
+  ACCESS_TOKEN_EXPIRES_KEY,
+  ACCESS_TOKEN_KEY,
+  AUTH_ENDPOINTS,
+} from 'src/app/core/constants/constants';
+import { AccessToken, LoginRequest, LoginResponse } from 'src/app/models/auth.model';
 
 @Injectable({
   providedIn: 'root',

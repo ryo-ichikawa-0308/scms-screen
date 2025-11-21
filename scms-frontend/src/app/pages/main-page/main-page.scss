@@ -1,0 +1,32 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+/**
+ * アプリケーションの全体的なレイアウト
+ * ヘッダー、フッターが固定または常に表示されることを想定し、
+ * メインコンテンツがそれらに遮られないようにする。
+ */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50; /* 他の要素の上に表示 */
+  width: 100%;
+}
+
+.main-content {
+  flex-grow: 1; /* コンテンツ領域が残りのスペースをすべて占める */
+  display: flex;
+  flex-direction: column;
+  /* 必要に応じて最大幅を設定 */
+}
+
+app-footer {
+  width: 100%;
+}

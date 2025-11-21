@@ -1,0 +1,12 @@
+<app-header [title]="headerTitle()">
+  <app-hamburger-menu 
+    [isLoggedIn]="isLoggedIn()"
+    [menuItems]="menuItems()">
+  </app-hamburger-menu>
+</app-header>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<app-footer></app-footer>

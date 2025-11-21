@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PagingComponent, PagingConfig } from '../paging/paging.component';
+import { PagingComponent, PagingConfig } from 'src/app/components/paging/paging.component';
 
 // ヘッダー定義の型を拡張
 export interface GridHeader<T extends object> {

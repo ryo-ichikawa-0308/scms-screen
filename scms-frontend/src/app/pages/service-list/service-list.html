@@ -1,0 +1,71 @@
+<app-header title="サービス一覧">
+  <app-hamburger-menu 
+    [isLoggedIn]="isLoggedIn()"
+    [serviceLink]="serviceLinkConfig"
+    [contractLink]="contractLinkConfig">
+  </app-hamburger-menu>
+</app-header>
+
+<main class="service-list-main container">
+  
+  <section class="search-form-card">
+    <div class="form-group">
+      <label for="serviceName" class="input-label">サービス名</label>
+      <input 
+        id="serviceName"
+        type="text"
+        placeholder="サービス名を入力"
+        [(ngModel)]="searchServiceName"
+        (keydown.enter)="searchServices()"
+        class="input-field"
+      />
+    </div>
+    
+    <app-button 
+      (click)="searchServices()" 
+      buttonType="primary"
+      class="search-button">
+      検索
+    </app-button>
+  </section>
+  
+  <section class="grid-area">
+    <h2>検索結果一覧 ({{ pagingConfig().totalItems }}件)</h2>
+    <app-list-grid 
+      [data]="data()"
+      [headers]="gridHeaders"
+      [pagingConfig]="pagingConfig()"
+      keyField="id" 
+      (recordClick)="onRecordClick($event)"
+      (pageChange)="onPageChange($event)">
+    </app-list-grid>
+  </section>
+
+</main>
+
+
+<!-- サービス詳細モーダルポップアップ (isModalOpen() が true の場合に表示) -->
+@if (isModalOpen() && selectedServiceDetail()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>サービス詳細: {{ selectedServiceDetail()!.name }}</h3>
+        <button class="close-button" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <p><strong>ID:</strong> {{ selectedServiceDetail()!.id }}</p>
+        <p><strong>料金 (税込):</strong> ¥{{ selectedServiceDetail()!.price.toLocaleString() }}/{{selectedServiceDetail()!.unit }}</p>
+        <p class="description">
+          <strong>説明:</strong> {{ selectedServiceDetail()!.description || '説明なし' }}
+        </p>
+      </div>
+      
+      <div class="modal-footer">
+        <app-button (click)="closeModal()" buttonType="secondary">閉じる</app-button>
+      </div>
+    </div>
+  </div>
+}
