@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 // 共通コンポーネントとモデル
-import { HeaderComponent } from 'src/app/components/header/header.component';
 import { ButtonComponent } from 'src/app/components/button/button.component';
-import { HamburgerMenuComponent } from 'src/app/components/hamburger-menu/hamburger-menu.component';
 import { ListGridComponent, GridHeader } from 'src/app/components/list-grid/list-grid.component';
 import { ServiceListsService } from 'src/app/core/service-lists/service-lists.service';
 import { PagingConfig } from 'src/app/models/page-config.model';
@@ -16,15 +14,7 @@ import { ServiceDetailComponent } from 'src/app/pages/service-detail/service-det
 @Component({
   selector: 'app-service-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    HeaderComponent,
-    ButtonComponent,
-    HamburgerMenuComponent,
-    ListGridComponent,
-    ServiceDetailComponent,
-  ],
+  imports: [CommonModule, FormsModule, ButtonComponent, ListGridComponent, ServiceDetailComponent],
   templateUrl: './service-list.html',
   styleUrls: ['./service-list.scss'],
 })
@@ -130,7 +120,7 @@ export class ServiceListComponent implements OnInit {
   onRecordClick(serviceId: string): void {
     console.log(`サービスID: ${serviceId} の詳細を表示`);
 
-    const serviceDetail = this.data().find((s) => s.id === serviceId) || null;
+    const serviceDetail = this.data().find((s) => String(s.id) === serviceId) || null;
 
     if (serviceDetail) {
       this.selectedServiceDetail.set(serviceDetail);

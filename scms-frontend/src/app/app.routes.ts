@@ -7,7 +7,7 @@ import { ServiceDetailComponent } from './pages/service-detail/service-detail.co
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: '/service-list', component: ServiceListComponent },
+  { path: 'service-list', component: ServiceListComponent },
   //  { path: '/service-detail', component: ServiceDetailComponent },
   //  { path: '/contract-list', component: ContractListComponent },
   //  { path: '/contract-detail', component: ContractDetailComponent },

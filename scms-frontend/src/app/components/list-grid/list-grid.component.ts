@@ -17,35 +17,50 @@ export interface GridHeader<T extends object> {
   styleUrls: ['./list-grid.component.scss'],
 })
 export class ListGridComponent<T extends object> {
-  @Input() data: T[] = [];
+  // 入力プロパティ
+  @Input({ required: true }) data: T[] = [];
+  @Input({ required: true }) headers!: GridHeader<T>[];
+  @Input({ required: true }) pagingConfig!: PagingConfig;
 
-  // 拡張された型を使用
-  @Input() headers: GridHeader<T>[] = [];
+  // 修正: keyFieldの型は keyof T または string を受け入れる
+  @Input({ required: true }) keyField!: keyof T | string;
 
-  @Input() pagingConfig!: PagingConfig;
+  // 出力イベント: クリックされたレコードのIDを出力 (string型に修正)
+  @Output() recordClick = new EventEmitter<string>();
 
-  // 新規追加: レコードクリック時に値を取得するためのキーを指定
-  @Input() keyField: keyof T | '' = '';
-
-  // レコードクリックイベント。keyFieldの値(IDなど)を返す。
-  @Output() recordClick = new EventEmitter<T[keyof T] | T>();
+  // 出力イベント: ページング変更
   @Output() pageChange = new EventEmitter<number>();
 
-  // テンプレートで表示するヘッダーのみをフィルタリング
   get visibleHeaders(): GridHeader<T>[] {
-    return this.headers.filter((header) => !header.hidden);
+    return this.headers ? this.headers.filter((h) => !h.hidden) : [];
   }
 
   /**
-   * レコードがクリックされたときにイベントを発火
+   * Tのキーの型ガード
+   * @param obj チェック対象のオブジェクト
+   * @param key チェック対象のキー (string)
+   * @returns キーがTの有効なキーであり、オブジェクト自身がそのプロパティを持っている場合にtrue
    */
-  onRecordClick(item: T): void {
-    if (this.keyField && item[this.keyField] !== undefined) {
-      // keyFieldが指定されている場合、その値を発火
-      this.recordClick.emit(item[this.keyField]);
+  isKeyOfT(obj: T, key: string | keyof T): key is keyof T {
+    if (typeof key === 'string') {
+      return Object.prototype.hasOwnProperty.call(obj, key);
+    }
+    return false;
+  }
+
+  /**
+   * 行がクリックされたときの処理
+   * @param record クリックされたレコードデータ
+   */
+  handleRecordClick(record: T): void {
+    const key = this.keyField;
+
+    if (this.isKeyOfT(record, key)) {
+      const value = record[key];
+
+      this.recordClick.emit(String(value));
     } else {
-      // keyFieldがない場合はレコード全体を発火 (フォールバック)
-      this.recordClick.emit(item);
+      console.warn(`ListGrid: keyField '${String(key)}' not found in record.`);
     }
   }
 

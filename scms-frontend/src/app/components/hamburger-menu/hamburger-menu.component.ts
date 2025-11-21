@@ -5,7 +5,6 @@ import { MenuItem, MENU_ICONS } from 'src/app/models/hamburger-menu.model';
   selector: 'app-hamburger-menu',
   standalone: true,
   imports: [CommonModule],
-  // ChangeDetectionStrategy.OnPush を設定し、パフォーマンスを最適化
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './hamburger-menu.component.html', // テンプレートファイルを指定
   styleUrls: ['./hamburger-menu.component.scss'], // スタイルファイルを指定
@@ -13,7 +12,7 @@ import { MenuItem, MENU_ICONS } from 'src/app/models/hamburger-menu.model';
 export class HamburgerMenuComponent {
   readonly menuIcons = MENU_ICONS;
 
-  @Input({ required: true }) isLoggedIn = signal(false);
+  @Input({ required: true }) isLoggedIn!: boolean;
   @Input({ required: true }) menuItems!: MenuItem[];
 
   readonly isMenuOpen = signal(false);

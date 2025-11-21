@@ -31,7 +31,7 @@
     
     <div class="p-4 space-y-2">
       <!-- メニュー項目のリスト -->
-      @for (item of menuItems(); track item.label) {
+      @for (item of menuItems; track item.label) {
         <a 
           (click)="executeAction(item.action)"
           class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition duration-150">
