@@ -1,4 +1,4 @@
-import { Component, Input, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuItem, MENU_ICONS } from 'src/app/models/hamburger-menu.model';
 @Component({
@@ -11,22 +11,12 @@ import { MenuItem, MENU_ICONS } from 'src/app/models/hamburger-menu.model';
   styleUrls: ['./hamburger-menu.component.scss'], // スタイルファイルを指定
 })
 export class HamburgerMenuComponent {
-  // テンプレートで利用できるように MENU_ICONS をプロパティとして公開
   readonly menuIcons = MENU_ICONS;
 
-  // 外部から渡されるログイン状態
   @Input({ required: true }) isLoggedIn = signal(false);
+  @Input({ required: true }) menuItems!: MenuItem[];
 
-  // 外部から渡されるメニューデータ
-  @Input({ required: true }) serviceLink!: MenuItem;
-  @Input({ required: true }) contractLink!: MenuItem;
-
-  // 内部状態: メニューの開閉状態 (Signal)
   readonly isMenuOpen = signal(false);
-
-  // Computed Signal: 渡されたリンク情報をメニュー項目の配列として統合
-  // item.iconKey が定義されたため、ここではロジックを簡素化
-  readonly menuItems = computed(() => [this.serviceLink, this.contractLink]);
 
   constructor() {}
 
@@ -49,7 +39,9 @@ export class HamburgerMenuComponent {
    * @param action 実行する関数
    */
   executeAction(action: () => void): void {
+    // 実行前にメニューを閉じる
     this.closeMenu();
+    // 外部から渡された関数を実行
     action();
   }
 }

@@ -1,1 +1,28 @@
-service detail.
+<!-- サービス詳細モーダルポップアップ -->
+@if (serviceDetail) {
+  <!-- オーバーレイ -->
+  <div class="modal-overlay" (click)="handleClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header">
+        <h3>サービス詳細: {{ serviceDetail.name }}</h3>
+        <button class="close-button" (click)="handleClose()">
+          &times;
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <p><strong>ID:</strong> {{ serviceDetail.id }}</p>
+        <p><strong>料金 (税込):</strong> ¥{{ serviceDetail.price.toLocaleString() }}</p>
+        <p><strong>ステータス:</strong> {{ serviceDetail.status }}</p>
+        <p class="description">
+          <strong>説明:</strong> {{ serviceDetail.description || '説明なし' }}
+        </p>
+      </div>
+      
+      <div class="modal-footer">
+        <app-button (click)="handleClose()" buttonType="secondary">閉じる</app-button>
+      </div>
+    </div>
+  </div>
+}

@@ -12,6 +12,7 @@ import { ServiceListsService } from 'src/app/core/service-lists/service-lists.se
 import { PagingConfig } from 'src/app/models/page-config.model';
 import { Service } from 'src/app/models/service.model';
 import { MenuItem } from 'src/app/models/hamburger-menu.model';
+import { ServiceDetailComponent } from 'src/app/pages/service-detail/service-detail.component';
 @Component({
   selector: 'app-service-list',
   standalone: true,
@@ -22,6 +23,7 @@ import { MenuItem } from 'src/app/models/hamburger-menu.model';
     ButtonComponent,
     HamburgerMenuComponent,
     ListGridComponent,
+    ServiceDetailComponent,
   ],
   templateUrl: './service-list.html',
   styleUrls: ['./service-list.scss'],
@@ -121,15 +123,18 @@ export class ServiceListComponent implements OnInit {
    * リストグリッドのレコードクリックイベントハンドラ
    * @param serviceId クリックされたレコードのID
    */
+  /**
+   * リストグリッドのレコードクリックイベントハンドラ
+   * @param serviceId クリックされたレコードのID
+   */
   onRecordClick(serviceId: string): void {
     console.log(`サービスID: ${serviceId} の詳細を表示`);
 
-    // IDに基づいて詳細データを取得 (ここではモック)
     const serviceDetail = this.data().find((s) => s.id === serviceId) || null;
 
     if (serviceDetail) {
       this.selectedServiceDetail.set(serviceDetail);
-      this.isModalOpen.set(true); // モーダルを開く
+      this.isModalOpen.set(true);
     }
   }
 

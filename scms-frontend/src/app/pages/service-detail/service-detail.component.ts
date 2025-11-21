@@ -1,27 +1,27 @@
-import { Component } from '@angular/core';
-import { FooterComponent } from 'src/app/components/footer/footer.component';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from 'src/app/components/button/button.component';
-import { HeaderComponent } from 'src/app/components/header/header.component';
-import { LabelComponent } from 'src/app/components/label/label.component';
+import { Service } from 'src/app/models/service.model';
 
 @Component({
-  selector: 'service-detail',
+  selector: 'app-service-detail',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    HeaderComponent,
-    FooterComponent,
-    ButtonComponent,
-    LabelComponent,
-  ],
+  imports: [CommonModule, ButtonComponent],
   templateUrl: './service-detail.html',
   styleUrls: ['./service-detail.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush, // パフォーマンス最適化
 })
 export class ServiceDetailComponent {
-  // メッセージ表示用プロパティ
-  errorMessage: string | null = null;
-  isError: boolean = false;
+  // 親コンポーネントから表示する詳細データを受け取る
+  // Service型は外部（data.model）で定義されている前提
+  @Input({ required: true }) serviceDetail: Service | null = null;
+
+  // モーダルを閉じるイベントを親コンポーネントに送出する
+  @Output() closeModal = new EventEmitter<void>();
+
+  constructor() {}
+
+  handleClose(): void {
+    this.closeModal.emit();
+  }
 }
