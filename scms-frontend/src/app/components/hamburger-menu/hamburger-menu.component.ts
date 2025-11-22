@@ -6,8 +6,8 @@ import { MenuItem, MENU_ICONS } from 'src/app/models/hamburger-menu.model';
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './hamburger-menu.component.html', // テンプレートファイルを指定
-  styleUrls: ['./hamburger-menu.component.scss'], // スタイルファイルを指定
+  templateUrl: './hamburger-menu.component.html',
+  styleUrls: ['./hamburger-menu.component.scss'],
 })
 export class HamburgerMenuComponent {
   readonly menuIcons = MENU_ICONS;

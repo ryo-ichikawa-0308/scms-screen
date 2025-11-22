@@ -1,7 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 // 共通コンポーネントとモデル
 import { ButtonComponent } from 'src/app/components/button/button.component';
@@ -9,21 +8,27 @@ import { ListGridComponent, GridHeader } from 'src/app/components/list-grid/list
 import { ServiceListsService } from 'src/app/core/service-lists/service-lists.service';
 import { PagingConfig } from 'src/app/models/page-config.model';
 import { Service } from 'src/app/models/service.model';
-import { MenuItem } from 'src/app/models/hamburger-menu.model';
 import { ServiceDetailComponent } from 'src/app/pages/service-detail/service-detail.component';
+import { TextboxComponent } from 'src/app/components/textbox/textbox.component';
 @Component({
   selector: 'app-service-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, ListGridComponent, ServiceDetailComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonComponent,
+    ListGridComponent,
+    ServiceDetailComponent,
+    TextboxComponent,
+  ],
   templateUrl: './service-list.html',
   styleUrls: ['./service-list.scss'],
 })
 export class ServiceListComponent implements OnInit {
   private serviceListsService = inject(ServiceListsService);
-  private router = inject(Router);
 
   // --- 検索フォームの状態 ---
-  searchServiceName = signal({ name: '' });
+  serviceName = signal<string>('');
 
   // --- リストグリッドとページングの状態 ---
   data = signal<Service[]>([]);
@@ -51,24 +56,6 @@ export class ServiceListComponent implements OnInit {
   // ログイン状態はモックとして true を設定
   isLoggedIn = signal(true);
 
-  // サービス一覧へのリンク設定
-  serviceLinkConfig: MenuItem = {
-    label: 'サービス一覧ページ',
-    iconKey: 'service',
-    action: () => {
-      console.log('サービス一覧へ');
-    },
-  };
-
-  // 契約一覧へのリンク設定
-  contractLinkConfig: MenuItem = {
-    label: '契約一覧ページへ',
-    iconKey: 'contract',
-    action: () => {
-      void this.router.navigate(['/contract-list']);
-    },
-  };
-
   ngOnInit(): void {
     // 画面ロード時に検索条件なしで検索を実行
     this.searchServices();
@@ -79,11 +66,12 @@ export class ServiceListComponent implements OnInit {
    * @param newPage 検索するページ番号 (ページング時のみ使用)
    */
   searchServices(newPage: number = 1): void {
-    const searchCondition = this.searchServiceName();
+    const searchName = this.serviceName();
     const itemsPerPage = this.pagingConfig().itemsPerPage;
     const startIndex = (newPage - 1) * itemsPerPage;
 
-    // ServiceServiceからデータを取得 (ここではモックデータを使用)
+    // 検索条件オブジェクトを作成 (ServiceListsServiceが期待する形式に合わせる)
+    const searchCondition = { name: searchName };
     const result = this.serviceListsService.getServiceList(
       searchCondition,
       startIndex,

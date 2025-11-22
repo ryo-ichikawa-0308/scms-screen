@@ -1,30 +1,19 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // [(ngModel)] のために必要
-import { Router } from '@angular/router'; // 画面遷移のために必要
-import { CommonModule } from '@angular/common'; // *ngIf のために必要
-
-// 作成/既存のコンポーネントとサービスをインポート
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/core/auth/auth.service';
-import { HeaderComponent } from 'src/app/components/header/header.component';
-import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { ButtonComponent } from 'src/app/components/button/button.component';
 import { LabelComponent } from 'src/app/components/label/label.component';
 import { LoginRequest } from 'src/app/models/auth.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorPayload } from 'src/app/models/error.model';
-// TextboxComponentは、ここでは標準のinputタグを使用します
+import { TextboxComponent } from 'src/app/components/textbox/textbox.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    HeaderComponent,
-    FooterComponent,
-    ButtonComponent,
-    LabelComponent,
-  ],
+  imports: [CommonModule, FormsModule, ButtonComponent, LabelComponent, TextboxComponent],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
@@ -46,11 +35,11 @@ export class LoginComponent {
    * ログインボタン押下時のイベントハンドラ
    */
   handleLogin(): void {
-    this.errorMessage = null; // エラーメッセージをリセット
+    this.errorMessage = null;
     this.isError = false;
 
     // 簡易バリデーション
-    if (!this.email || !this.email) {
+    if (!this.email || !this.password) {
       this.errorMessage = 'ユーザーIDとパスワードを入力してください。';
       this.isError = true;
       return;
@@ -61,18 +50,16 @@ export class LoginComponent {
       password: this.password,
     };
 
-    // 認証サービスを呼び出し
     this.authService.login(credentials).subscribe({
       next: () => {
         // ログイン成功: サービス一覧画面へ遷移
-        void this.router.navigate(['/service-list']);
+        void this.router.navigate(['/main-page/service-list']);
       },
       error: (err: HttpErrorResponse) => {
         // ログイン失敗
         console.error('ログイン処理中にエラーが発生しました', err);
 
         // エラーメッセージの表示
-        // バックエンドからのエラーメッセージがあればそれを優先し、なければ汎用メッセージを表示
         const apiError = err.error as ErrorPayload;
 
         this.errorMessage =
