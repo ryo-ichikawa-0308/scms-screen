@@ -7,7 +7,7 @@ import {
   AUTH_ENDPOINTS,
 } from 'src/app/core/constants/constants';
 import { AccessToken, LoginRequest, LoginResponse } from 'src/app/models/auth.model';
-
+import { CookieService } from 'ngx-cookie-service';
 @Injectable({
   providedIn: 'root',
 })
@@ -22,8 +22,12 @@ export class AuthService {
   private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(
     null,
   );
+  private readonly REFRESH_TOKEN = 'refresh_token';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cookieService: CookieService,
+  ) {}
 
   /**
    * ログインAPIを呼び出し、成功した場合はトークンを保存する
@@ -53,6 +57,7 @@ export class AuthService {
   getAccessToken(): string | null {
     return sessionStorage.getItem(this.ACCESS_TOKEN_KEY);
   }
+
   /**
    * アクセストークンが有効期限切れかどうかをチェックする
    */
@@ -67,6 +72,7 @@ export class AuthService {
     // 有効期限 <= 現在日時 の場合、期限切れ
     return expiresTime <= now;
   }
+
   /**
    * トークンリフレッシュAPIを呼び出す
    */
@@ -100,6 +106,9 @@ export class AuthService {
     );
   }
 
+  /**
+   * アクセストークンとリフレッシュトークンを無効化する
+   */
   logout() {
     throw new Error('Method not implemented.');
   }
@@ -109,7 +118,68 @@ export class AuthService {
     return this.refreshTokenSubject;
   }
 
+  /**
+   * トークンリフレッシュ中の検出
+   * @returns トークンリフレッシュが実行中であればtrue
+   */
   getIsRefreshing(): boolean {
     return this.isRefreshing;
+  }
+
+  /**
+   * ユーザーが認証可能（セッションが有効）かどうかを判断します。
+   * アクセストークンまたはリフレッシュトークンのいずれかが有効であれば true を返します。
+   * * @returns 認証可能であれば true、完全にセッションが切れていれば false
+   */
+  public isSessionValid(): boolean {
+    // 1 & 2. isAccessTokenExpired()の戻り値がfalseの場合、trueを返す。
+    if (!this.isAccessTokenExpired()) {
+      return true;
+    }
+
+    // 3. isAccessTokenExpired()の戻り値がtrueの場合、Cookieからリフレッシュトークンの期限を取得する。
+    const refreshExpiryTimeMs = this.getRefreshTokenExpiration();
+
+    // 5. リフレッシュトークンが取得できない場合、falseを返す。
+    if (refreshExpiryTimeMs === null) {
+      return false;
+    }
+
+    // 現在時刻 (ミリ秒)
+    const currentTimeMs = Date.now();
+
+    // 4. リフレッシュトークンの期限が現在時刻より未来の場合、trueを返す。
+    if (refreshExpiryTimeMs > currentTimeMs) {
+      // 注意: この場合、アクセストークンは期限切れなので、後続の処理でトークンのリフレッシュが必要です。
+      return true;
+    }
+
+    // 5. リフレッシュトークンの期限が現在時刻より過去の場合、falseを返す。
+    return false;
+  }
+  /**
+   * Cookieからリフレッシュトークンの有効期限を取得する
+   * @returns 有効期限のUnixタイムスタンプ (ミリ秒単位) または null
+   */
+  private getRefreshTokenExpiration(): number | null {
+    try {
+
+      const cookieString = this.cookieService.get(this.REFRESH_TOKEN); 
+      if (!cookieString) {
+        return null;
+      }
+      const payload = JSON.parse(cookieString);
+
+      if (typeof payload.expires === 'number') {
+        return payload.expires * 1000; 
+      }
+      
+      console.warn('リフレッシュトークンのCookieにexpiresキーが見つかりません。:', payload);
+      return null;
+
+    } catch (error) {
+      console.error('Cookie文字列のJSONパースに失敗:', error);
+      return null;
+    }
   }
 }
