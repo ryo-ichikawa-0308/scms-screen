@@ -9,6 +9,8 @@ export interface Service {
   id: string;
   /** サービスID */
   serviceId: string;
+  /** 提供ユーザー名 */
+  supplierName: string;
   /** サービス名 */
   name: string;
   /** 概要 */

@@ -37,9 +37,8 @@ export class TextboxComponent implements ControlValueAccessor {
   @Input() required: boolean = false;
   @Input() name: string = '';
   @Input() disabled: boolean = false;
+  @Input() value: string = '';
   @Output() valueChange = new EventEmitter<string>();
-
-  value: string = '';
 
   onChange = (newValue: string) => {
     this.value = newValue;

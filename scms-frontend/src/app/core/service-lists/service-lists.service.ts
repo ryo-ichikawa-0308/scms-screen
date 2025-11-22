@@ -21,6 +21,7 @@ export class ServiceListsService {
       data: [
         {
           id: 'id-001',
+          supplierName: '提供者００１',
           serviceId: 'service-001',
           name: 'サービス００１',
           description: '説明００１',
@@ -29,6 +30,7 @@ export class ServiceListsService {
         },
         {
           id: 'id-002',
+          supplierName: '提供者００２',
           serviceId: 'service-002',
           name: 'サービス００２',
           description: '説明００２',
@@ -37,9 +39,10 @@ export class ServiceListsService {
         },
         {
           id: 'id-003',
+          supplierName: '提供者００３',
           serviceId: 'service-003',
-          name: 'サービス００２',
-          description: '説明００２',
+          name: 'サービス００３',
+          description: '説明００３',
           price: 300,
           unit: '個',
         },
