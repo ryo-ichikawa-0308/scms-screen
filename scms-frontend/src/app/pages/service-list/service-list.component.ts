@@ -7,6 +7,7 @@ import { UserServicesService } from 'src/app/bff/user-services/user-services.ser
 import { PagingConfig } from 'src/app/models/page-config.model';
 import { ServiceDetail } from 'src/app/models/api.model';
 import { ServiceDetailComponent } from 'src/app/pages/service-detail/service-detail.component';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-service-list',
   standalone: true,
@@ -14,6 +15,7 @@ import { ServiceDetailComponent } from 'src/app/pages/service-detail/service-det
     CommonModule,
     FormsModule,
     ServiceDetailComponent,
+    MatIconModule,
   ],
   templateUrl: './service-list.component.html',
   styleUrls: ['./service-list.component.scss'],

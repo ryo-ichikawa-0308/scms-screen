@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import { UserServicesService } from 'src/app/bff/user-services/user-services.service';
 import { ContractsService } from 'src/app/bff/contracts/contracts.service';
@@ -16,11 +17,18 @@ import { ServiceDetail } from 'src/app/models/api.model';
   selector: 'app-service-detail-dialog',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, DecimalPipe, 
-    MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, MatCardModule
+    CommonModule,
+    FormsModule,
+    DecimalPipe,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatDialogModule,
   ],
   templateUrl: './service-detail.component.html',
-  styleUrls: ['./service-detail.component.scss']
+  styleUrls: ['./service-detail.component.scss'],
 })
 export class ServiceDetailComponent {
   private userServicesService = inject(UserServicesService);
@@ -44,7 +52,7 @@ export class ServiceDetailComponent {
     const result = await this.userServicesService.getServiceDetail(id);
     this.detail.set(result);
     this.isLoading.set(false);
-    
+
     // 在庫がない場合は注文数を0に設定
     if (result && result.stock === 0) {
       this.orderQuantity = 0;
@@ -52,11 +60,11 @@ export class ServiceDetailComponent {
   }
 
   async executeContract(): Promise<void> {
-    if (!this.detail() || this.orderQuantity < 1 ) return;
+    if (!this.detail() || this.orderQuantity < 1) return;
 
     this.isProcessing.set(true); // 契約ボタンを不活化
     this.contractMessage.set(null);
-    const serviceId = this.detail()!.id||'';
+    const serviceId = this.detail()!.id || '';
     const quantity = this.orderQuantity;
 
     const success = await this.contractsService.executeContract(serviceId, quantity);

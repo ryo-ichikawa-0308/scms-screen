@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { ContractsService } from 'src/app/bff/contracts/contracts.service';
 import { ContractDetail } from 'src/app/models/api.model';
@@ -20,7 +20,7 @@ import { ContractDetailComponent } from 'src/app/pages/contract-detail/contract-
   imports: [
     CommonModule, FormsModule, DecimalPipe,
     MatCardModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule,
-    MatTableModule, MatPaginatorModule
+    MatTableModule, MatPaginatorModule, MatDialogModule
   ],
   templateUrl: './contract-list.component.html',
   styleUrls: ['./contract-list.component.scss']
