@@ -1,18 +1,17 @@
 import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderComponent } from 'src/app/components/header/header.component';
-import { FooterComponent } from 'src/app/components/footer/footer.component';
-import { HamburgerMenuComponent } from 'src/app/components/hamburger-menu/hamburger-menu.component';
+import { HamburgerMenuComponent } from 'src/app/pages/hamburger-menu/hamburger-menu.component';
 import { MenuItem } from 'src/app/models/hamburger-menu.model';
-import { AuthService } from 'src/app/core/auth/auth.service';
+import { AuthService } from 'src/app/bff/auth/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-main-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent, HamburgerMenuComponent],
-  templateUrl: './main-page.html',
-  styleUrls: ['./main-page.scss'],
+  imports: [CommonModule, RouterModule, HamburgerMenuComponent, MatIconModule],
+  templateUrl: './main-page.component.html',
+  styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
   private router = inject(Router);
@@ -65,7 +64,7 @@ export class MainPageComponent {
     return [];
   });
 
-  constructor() {}
+  constructor() { }
 
   /**
    * ヘッダータイトルを更新するメソッド

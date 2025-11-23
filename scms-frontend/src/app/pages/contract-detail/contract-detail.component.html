@@ -1,0 +1,47 @@
+<mat-card class="detail-card">
+    <mat-card-header class="dialog-header">
+        <mat-card-title>{{ detail()?.name || '契約詳細' }} (ID: {{ detail()?.id }})</mat-card-title>
+        <button mat-icon-button (click)="dialogRef.close()" class="close-button">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-card-header>
+    <mat-card-content class="dialog-content">
+        @if (isLoading()) {
+            <div class="loading-area"><mat-icon class="spinner">autorenew</mat-icon> 読み込み中...</div>
+        } @else if (detail()) {
+            <div class="detail-info">
+                <p><strong>開始日:</strong> {{ detail()!.startDate }}</p>
+                <p><strong>注文数:</strong> {{ detail()!.orderQuantity }}</p>
+                <p class="status-display">
+                    <strong>ステータス:</strong> 
+                    <span [class.active-status]="detail()!.status === 'active'" 
+                          [class.cancelled-status]="detail()!.status === 'cancelled'">
+                        {{ detail()!.status === 'active' ? '有効' : '解約済み' }}
+                    </span>
+                </p>
+            </div>
+
+            @if (cancellationMessage()) {
+                <div [class.success-message]="isCancellationSuccess()" [class.error-message]="!isCancellationSuccess()" class="message-box">
+                    {{ cancellationMessage() }}
+                </div>
+            }
+
+        } @else {
+            <p class="error-message">契約が見つかりませんでした。</p>
+        }
+    </mat-card-content>
+    <mat-card-actions class="dialog-actions">
+        <button 
+            mat-raised-button 
+            color="warn" 
+            [disabled]="isLoading() || isProcessing() || !detail() || detail()!.status === 'cancelled'"
+            (click)="executeCancellation()">
+            @if (isProcessing()) {
+                <mat-icon class="spinner">autorenew</mat-icon>
+            }
+            解約する
+        </button>
+        <button mat-button (click)="dialogRef.close()">閉じる</button>
+    </mat-card-actions>
+</mat-card>

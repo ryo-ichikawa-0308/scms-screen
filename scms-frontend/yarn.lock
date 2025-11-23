@@ -201,6 +201,14 @@
   optionalDependencies:
     lmdb "3.4.2"
 
+"@angular/cdk@^20.2.14":
+  version "20.2.14"
+  resolved "https://registry.npmjs.org/@angular/cdk/-/cdk-20.2.14.tgz"
+  integrity sha512-7bZxc01URbiPiIBWThQ69XwOxVduqEKN4PhpbF2AAyfMc/W8Hcr4VoIJOwL0O1Nkq5beS8pCAqoOeIgFyXd/kg==
+  dependencies:
+    parse5 "^8.0.0"
+    tslib "^2.3.0"
+
 "@angular/cli@^20.3.6":
   version "20.3.6"
   resolved "https://registry.npmjs.org/@angular/cli/-/cli-20.3.6.tgz"
@@ -264,6 +272,13 @@
   version "20.3.5"
   resolved "https://registry.npmjs.org/@angular/forms/-/forms-20.3.5.tgz"
   integrity sha512-vMgDxBTFV6qA1vOHiJ49s3EHo3gTp86ignp6laeXULSLsMIpYlLmj/hj3zhK79Me5kRWSaPJ+SOTIgXPshAMAQ==
+  dependencies:
+    tslib "^2.3.0"
+
+"@angular/material@^20.2.14":
+  version "20.2.14"
+  resolved "https://registry.npmjs.org/@angular/material/-/material-20.2.14.tgz"
+  integrity sha512-IbAgV6XLsvmHiJzxycVhcNC1PA4M30qi+ERCOir6cT333Bxm8vDV32gsOjfL52uzG5YRARroPC+8s1XqR2oxeA==
   dependencies:
     tslib "^2.3.0"
 

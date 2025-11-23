@@ -1,0 +1,21 @@
+<div class="main-layout">
+    <mat-toolbar color="primary" class="header">
+        <app-hamburger-menu></app-hamburger-menu>
+
+        <span class="app-title">Angular Service App</span>
+
+        <span class="spacer"></span>
+
+        <button mat-button (click)="logout()">
+            <mat-icon>logout</mat-icon>ログアウト
+        </button>
+    </mat-toolbar>
+
+    <main class="content">
+        <router-outlet></router-outlet>
+    </main>
+
+    <footer class="footer">
+        © 2025 Ryo ICHIKAWA. All rights reserved.
+    </footer>
+</div>

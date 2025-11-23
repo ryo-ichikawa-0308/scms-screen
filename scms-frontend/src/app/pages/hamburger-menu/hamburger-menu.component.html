@@ -1,0 +1,34 @@
+<!-- サイドナブのトリガーボタン -->
+<button mat-icon-button (click)="sidenav.open()">
+    <mat-icon>menu</mat-icon>
+</button>
+
+<!-- サイドナブコンテナ (画面全体を覆う) -->
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="over" class="menu-sidenav">
+        <mat-nav-list (click)="sidenav.close()">
+            @if (isLoggedIn()) {
+                <!-- ログイン中のメニュー項目 -->
+                <a mat-list-item routerLink="/main-page/service-list">
+                    <mat-icon matListItemIcon>list</mat-icon>
+                    <div matListItemTitle>サービス一覧</div>
+                </a>
+                <a mat-list-item routerLink="/main-page/contract-list">
+                    <mat-icon matListItemIcon>description</mat-icon>
+                    <div matListItemTitle>契約一覧</div>
+                </a>
+                <mat-divider></mat-divider>
+                <!-- ログアウトはヘッダーボタンと共通のロジックを使用 -->
+                <button mat-list-item (click)="logout()">
+                    <mat-icon matListItemIcon>logout</mat-icon>
+                    <div matListItemTitle>ログアウト</div>
+                </button>
+            } @else {
+                <!-- ログアウト中の固定文字列 -->
+                <mat-list-item class="logout-message">
+                    ログインしてください
+                </mat-list-item>
+            }
+        </mat-nav-list>
+    </mat-sidenav>
+</mat-sidenav-container>

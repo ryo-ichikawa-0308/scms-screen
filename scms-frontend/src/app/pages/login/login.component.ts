@@ -2,20 +2,17 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from 'src/app/core/auth/auth.service';
-import { ButtonComponent } from 'src/app/components/button/button.component';
-import { LabelComponent } from 'src/app/components/label/label.component';
-import { LoginRequest } from 'src/app/models/auth.model';
+import { AuthService } from 'src/app/bff/auth/auth.service';
+import { LoginRequest } from 'src/app/models/api.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorPayload } from 'src/app/models/error.model';
-import { TextboxComponent } from 'src/app/components/textbox/textbox.component';
+import { ErrorPayload } from 'src/app/models/api.model';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, LabelComponent, TextboxComponent],
-  templateUrl: './login.html',
-  styleUrls: ['./login.scss'],
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   // フォームデータとバインドするプロパティ

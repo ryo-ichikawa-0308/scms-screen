@@ -3,35 +3,29 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 // 共通コンポーネントとモデル
-import { ButtonComponent } from 'src/app/components/button/button.component';
-import { ListGridComponent, GridHeader } from 'src/app/components/list-grid/list-grid.component';
-import { ServiceListsService } from 'src/app/core/service-lists/service-lists.service';
+import { UserServicesService } from 'src/app/bff/user-services/user-services.service';
 import { PagingConfig } from 'src/app/models/page-config.model';
-import { Service } from 'src/app/models/service.model';
+import { ServiceDetail } from 'src/app/models/api.model';
 import { ServiceDetailComponent } from 'src/app/pages/service-detail/service-detail.component';
-import { TextboxComponent } from 'src/app/components/textbox/textbox.component';
 @Component({
   selector: 'app-service-list',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    ButtonComponent,
-    ListGridComponent,
     ServiceDetailComponent,
-    TextboxComponent,
   ],
-  templateUrl: './service-list.html',
-  styleUrls: ['./service-list.scss'],
+  templateUrl: './service-list.component.html',
+  styleUrls: ['./service-list.component.scss'],
 })
 export class ServiceListComponent implements OnInit {
-  private serviceListsService = inject(ServiceListsService);
+  private serviceListsService = inject(UserServicesService);
 
   // --- 検索フォームの状態 ---
   serviceName = signal<string>('');
 
   // --- リストグリッドとページングの状態 ---
-  data = signal<Service[]>([]);
+  data = signal<ServiceDetail[]>([]);
   pagingConfig = signal<PagingConfig>({
     totalItems: 0,
     currentPage: 1,
@@ -41,16 +35,7 @@ export class ServiceListComponent implements OnInit {
 
   // --- モーダルの状態 ---
   isModalOpen = signal(false);
-  selectedServiceDetail = signal<Service | null>(null);
-
-  // --- リストグリッドのヘッダー定義 ---
-  gridHeaders: GridHeader<Service>[] = [
-    { key: 'id', label: 'ID', hidden: true },
-    { key: 'name', label: 'サービス名' },
-    { key: 'description', label: '概要' },
-    { key: 'price', label: '単価' },
-    { key: 'unit', label: '単位' },
-  ];
+  selectedServiceDetail = signal<ServiceDetail | null>(null);
 
   ngOnInit(): void {
     // 画面ロード時に検索条件なしで検索を実行
@@ -61,15 +46,15 @@ export class ServiceListComponent implements OnInit {
    * 検索ボタン押下、または画面ロード時にサービス検索を実行する
    * @param newPage 検索するページ番号 (ページング時のみ使用)
    */
-  searchServices(newPage: number = 1): void {
+  async searchServices(newPage: number = 1): Promise<void> {
     const searchName = this.serviceName();
     const itemsPerPage = this.pagingConfig().itemsPerPage;
     const startIndex = (newPage - 1) * itemsPerPage;
 
     // 検索条件オブジェクトを作成 (ServiceListsServiceが期待する形式に合わせる)
     const searchCondition = { name: searchName };
-    const result = this.serviceListsService.getServiceList(
-      searchCondition,
+    const result = await this.serviceListsService.getServiceList(
+      searchCondition.name,
       startIndex,
       itemsPerPage,
     );
@@ -78,7 +63,7 @@ export class ServiceListComponent implements OnInit {
     this.data.set(result.data);
     this.pagingConfig.set({
       ...this.pagingConfig(),
-      totalItems: result.pagingConfig.totalItems,
+      totalItems: result.totalRecords,
       currentPage: newPage,
     });
 

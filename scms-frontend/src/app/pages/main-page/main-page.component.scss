@@ -1,0 +1,35 @@
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header {
+    flex-shrink: 0;
+}
+
+.app-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-left: 1rem;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.content {
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+    padding: 1rem;
+}
+
+.footer {
+    flex-shrink: 0;
+    background-color: #333;
+    color: white;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 0.8rem;
+}

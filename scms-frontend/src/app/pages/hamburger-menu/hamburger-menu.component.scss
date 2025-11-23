@@ -1,0 +1,22 @@
+.sidenav-container {
+    /* サイドナビを画面全体に固定するための設定 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.menu-sidenav {
+    width: 250px;
+    pointer-events: auto;
+}
+
+.logout-message {
+    padding: 1rem;
+    color: #666;
+    font-style: italic;
+    font-size: 0.9rem;
+}

@@ -1,0 +1,80 @@
+.list-card {
+    margin: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-area {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.search-input {
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.loading-area, .no-records {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.grid-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+}
+
+.id-column {
+    min-width: 80px;
+}
+
+.quantity-column {
+    min-width: 100px;
+}
+
+.status-column {
+    min-width: 100px;
+}
+
+/* ステータス表示色 */
+.active-status {
+    color: #4caf50; /* Green */
+    font-weight: bold;
+}
+.cancelled-status {
+    color: #f44336; /* Red */
+    font-weight: bold;
+}
+
+/* クリック可能な行のスタイル */
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+    &:hover {
+        background-color: #e0e0e0;
+    }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+    .search-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-input {
+        max-width: 100%;
+    }
+}
