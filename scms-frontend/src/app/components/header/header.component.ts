@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  title = 'Simple Contract Management System';
+  @Input() title: string = 'Simple Contract Management System';
 }

@@ -1,3 +1,23 @@
-<header class="main-header">
-  <div class="logo">{{ title }}</div>
+<!-- Header: 固定ヘッダーとしてデザイン -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg p-3 flex items-center justify-between h-16">
+  <!-- メインナビゲーションエリア: メニューとタイトルを横並びにするために flex を使用 -->
+  <div class="flex items-center">
+
+    <!-- 1. コンテンツプロジェクション (ハンバーガーメニュー) -->
+    <!-- ng-content は HeaderComponent の中身を反映します -->
+    <ng-content></ng-content>
+
+    <!-- 2. タイトル: メニューアイコンのすぐ隣に配置 -->
+    <!-- ml-3 を追加して、メニューアイコンとの間に適切なスペースを設けます -->
+    <h1 class="text-xl font-bold ml-3 text-gray-800 truncate max-w-[calc(100vw-120px)] sm:max-w-full">
+      {{ title }}
+    </h1>
+  </div>
+
+  <!-- 右側のセクション (例: ユーザーアイコンや通知アイコンなど) -->
+  <div class="flex items-center space-x-4">
+    <!-- 必要に応じて要素を追加 -->
+  </div>
 </header>
+<!-- ヘッダーの高さ分のスペーサー (コンテンツが隠れないように) -->
+<div class="h-16"></div>

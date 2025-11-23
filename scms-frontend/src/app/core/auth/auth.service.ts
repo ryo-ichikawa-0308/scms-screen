@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import {
@@ -20,14 +20,31 @@ export class AuthService {
   // リフレッシュ処理の状態管理 (多重リフレッシュを防ぐため)
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(
-    null,
+    null
   );
   private readonly REFRESH_TOKEN = 'refresh_token';
 
-  constructor(
-    private http: HttpClient,
-    private cookieService: CookieService,
-  ) {}
+  // 認証状態を管理するためのWritableSignal
+  private _isLoggedIn = signal<boolean>(this.checkInitialSession());
+
+  // 外部から参照するためのRead-only Signal
+  public isLoggedIn = computed(() => this._isLoggedIn());
+
+  constructor(private http: HttpClient, private cookieService: CookieService) {}
+
+  // 初期セッションチェックロジック（ローカルストレージを確認）
+  private checkInitialSession(): boolean {
+    return !!localStorage.getItem('auth_token');
+  }
+
+  /**
+   * 認証状態のシグナルを更新します。
+   * MainPageComponent はこの変更を自動的に検知します。
+   * @param status ログイン状態
+   */
+  setLoggedIn(status: boolean): void {
+    this._isLoggedIn.set(status);
+  }
 
   /**
    * ログインAPIを呼び出し、成功した場合はトークンを保存する
@@ -39,7 +56,7 @@ export class AuthService {
       tap((response) => {
         // アクセストークンをセッションストレージに保存
         this.saveAccessToken(response.token);
-      }),
+      })
     );
   }
 
@@ -87,7 +104,7 @@ export class AuthService {
     // Subjectを初期化 (nullにしておき、新しいトークンが来たら流す)
     this.refreshTokenSubject.next(null);
 
-    return this.http.post<AccessToken>(AUTH_ENDPOINTS.REFRESH_TOKEN, {}).pipe(
+    return this.http.post<AccessToken>(this.REFRESH_URL, {}).pipe(
       tap((response) => {
         // 成功時
         this.saveAccessToken(response);
@@ -102,18 +119,24 @@ export class AuthService {
         this.refreshTokenSubject.next(null); // 通知をリセット
         this.logout(); // 強制ログアウト
         return throwError(() => err);
-      }),
+      })
     );
   }
 
   /**
-   * アクセストークンとリフレッシュトークンを無効化する
+   * アクセストークンとリフレッシュトークンを削除し、ログアウトする。
    */
   logout() {
-    throw new Error('Method not implemented.');
+    sessionStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(this.ACCESS_TOKEN_EXPIRES_KEY);
+    this.cookieService.delete(this.REFRESH_TOKEN);
+    console.log('アクセストークンとリフレッシュトークンを削除しました。');
   }
 
-  // Subject を外部に公開するゲッター
+  /**
+   * Subject を外部に公開するゲッター
+   * @returns リフレッシュトークンのサブジェクト
+   */
   getRefreshTokenSubject(): BehaviorSubject<string | null> {
     return this.refreshTokenSubject;
   }
@@ -124,62 +147,5 @@ export class AuthService {
    */
   getIsRefreshing(): boolean {
     return this.isRefreshing;
-  }
-
-  /**
-   * ユーザーが認証可能（セッションが有効）かどうかを判断します。
-   * アクセストークンまたはリフレッシュトークンのいずれかが有効であれば true を返します。
-   * * @returns 認証可能であれば true、完全にセッションが切れていれば false
-   */
-  public isSessionValid(): boolean {
-    // 1 & 2. isAccessTokenExpired()の戻り値がfalseの場合、trueを返す。
-    if (!this.isAccessTokenExpired()) {
-      return true;
-    }
-
-    // 3. isAccessTokenExpired()の戻り値がtrueの場合、Cookieからリフレッシュトークンの期限を取得する。
-    const refreshExpiryTimeMs = this.getRefreshTokenExpiration();
-
-    // 5. リフレッシュトークンが取得できない場合、falseを返す。
-    if (refreshExpiryTimeMs === null) {
-      return false;
-    }
-
-    // 現在時刻 (ミリ秒)
-    const currentTimeMs = Date.now();
-
-    // 4. リフレッシュトークンの期限が現在時刻より未来の場合、trueを返す。
-    if (refreshExpiryTimeMs > currentTimeMs) {
-      // 注意: この場合、アクセストークンは期限切れなので、後続の処理でトークンのリフレッシュが必要です。
-      return true;
-    }
-
-    // 5. リフレッシュトークンの期限が現在時刻より過去の場合、falseを返す。
-    return false;
-  }
-  /**
-   * Cookieからリフレッシュトークンの有効期限を取得する
-   * @returns 有効期限のUnixタイムスタンプ (ミリ秒単位) または null
-   */
-  private getRefreshTokenExpiration(): number | null {
-    try {
-
-      const cookieString = this.cookieService.get(this.REFRESH_TOKEN); 
-      if (!cookieString) {
-        return null;
-      }
-      const payload = JSON.parse(cookieString);
-
-      if (typeof payload.expires === 'number') {
-        return payload.expires * 1000; 
-      }
-      
-      console.warn('リフレッシュトークンのCookieにexpiresキーが見つかりません。:', payload);
-      return null;
-
-    } catch (error) {
-      console.error('Cookie文字列のJSONパースに失敗:', error);
-      return null;
-    }
   }
 }

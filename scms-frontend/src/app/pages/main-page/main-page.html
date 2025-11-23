@@ -1,8 +1,7 @@
 <app-header [title]="headerTitle()">
-  <app-hamburger-menu 
-    [isLoggedIn]="isLoggedIn()"
-    [menuItems]="menuItems()">
-  </app-hamburger-menu>
+  @if (isLoggedIn()) {
+  <app-hamburger-menu [isLoggedIn]="isLoggedIn()" [menuItems]="menuItems()"> </app-hamburger-menu>
+  }
 </app-header>
 
 <main class="main-content">

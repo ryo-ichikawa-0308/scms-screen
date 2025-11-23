@@ -2,7 +2,7 @@
 export interface MenuItem {
   label: string;
   action: () => void;
-  iconKey: 'service' | 'contract';
+  iconKey: 'service' | 'contract' | 'logout';
 }
 
 // アイコンSVG定義
@@ -28,4 +28,6 @@ export const MENU_ICONS: Record<MenuItem['iconKey'], string> = {
       <line x1="10" x2="8" y1="9" y2="9"></line>
     </svg>
   `,
+  // ログアウトアイコン
+  logout: ``,
 };

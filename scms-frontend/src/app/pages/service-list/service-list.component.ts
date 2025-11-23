@@ -52,10 +52,6 @@ export class ServiceListComponent implements OnInit {
     { key: 'unit', label: '単位' },
   ];
 
-  // --- ハンバーガーメニュー設定 ---
-  // ログイン状態はモックとして true を設定
-  isLoggedIn = signal(true);
-
   ngOnInit(): void {
     // 画面ロード時に検索条件なしで検索を実行
     this.searchServices();
@@ -97,10 +93,6 @@ export class ServiceListComponent implements OnInit {
     this.searchServices(newPage);
   }
 
-  /**
-   * リストグリッドのレコードクリックイベントハンドラ
-   * @param serviceId クリックされたレコードのID
-   */
   /**
    * リストグリッドのレコードクリックイベントハンドラ
    * @param serviceId クリックされたレコードのID
