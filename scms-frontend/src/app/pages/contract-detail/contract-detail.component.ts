@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,12 +11,9 @@ import { ContractDetail } from 'src/app/models/api.model';
 @Component({
   selector: 'app-contract-detail-dialog',
   standalone: true,
-  imports: [
-    CommonModule, DecimalPipe, 
-    MatButtonModule, MatIconModule, MatCardModule
-  ],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatCardModule],
   templateUrl: './contract-detail.component.html',
-  styleUrls: ['./contract-detail.component.scss']
+  styleUrls: ['./contract-detail.component.scss'],
 })
 export class ContractDetailComponent {
   private contractsService = inject(ContractsService);
@@ -44,17 +41,14 @@ export class ContractDetailComponent {
 
     this.isProcessing.set(true); // 解約ボタンを不活化
     this.cancellationMessage.set(null);
-    const contractId = this.detail()!.id||'';
+    const contractId = this.detail()!.id || '';
 
     const success = await this.contractsService.executeCancellation(contractId);
 
     if (success) {
       this.cancellationMessage.set(`解約が完了しました。契約ID: ${contractId}`);
       this.isCancellationSuccess.set(true);
-      // 解約成功時は、詳細情報も更新してボタンを不活化のままにする
-      this.detail.update(d => d ? { ...d, status: 'cancelled' } : d);
-      // isProcessing は true のまま(不活化のまま)だが、処理は完了したので false にする
-      this.isProcessing.set(false); 
+      this.isProcessing.set(false);
     } else {
       this.cancellationMessage.set('解約に失敗しました。時間をおいて再度お試しください。');
       this.isCancellationSuccess.set(false);

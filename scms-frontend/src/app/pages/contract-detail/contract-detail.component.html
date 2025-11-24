@@ -10,15 +10,8 @@
             <div class="loading-area"><mat-icon class="spinner">autorenew</mat-icon> 読み込み中...</div>
         } @else if (detail()) {
             <div class="detail-info">
-                <p><strong>開始日:</strong> {{ detail()!.startDate }}</p>
-                <p><strong>注文数:</strong> {{ detail()!.orderQuantity }}</p>
-                <p class="status-display">
-                    <strong>ステータス:</strong> 
-                    <span [class.active-status]="detail()!.status === 'active'" 
-                          [class.cancelled-status]="detail()!.status === 'cancelled'">
-                        {{ detail()!.status === 'active' ? '有効' : '解約済み' }}
-                    </span>
-                </p>
+                <p><strong>提供者:</strong> {{ detail()!.usersName }}</p>
+                <p><strong>注文数:</strong> {{ detail()!.quantity }}</p>
             </div>
 
             @if (cancellationMessage()) {
@@ -35,7 +28,7 @@
         <button 
             mat-raised-button 
             color="warn" 
-            [disabled]="isLoading() || isProcessing() || !detail() || detail()!.status === 'cancelled'"
+            [disabled]="isLoading() || isProcessing() || !detail() || isCancellationSuccess() "
             (click)="executeCancellation()">
             @if (isProcessing()) {
                 <mat-icon class="spinner">autorenew</mat-icon>

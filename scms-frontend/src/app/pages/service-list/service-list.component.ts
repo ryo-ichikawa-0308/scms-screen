@@ -1,105 +1,86 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 // 共通コンポーネントとモデル
 import { UserServicesService } from 'src/app/bff/user-services/user-services.service';
-import { PagingConfig } from 'src/app/models/page-config.model';
 import { ServiceDetail } from 'src/app/models/api.model';
 import { ServiceDetailComponent } from 'src/app/pages/service-detail/service-detail.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
 @Component({
   selector: 'app-service-list',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    ServiceDetailComponent,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
     MatIconModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
   ],
   templateUrl: './service-list.component.html',
   styleUrls: ['./service-list.component.scss'],
 })
 export class ServiceListComponent implements OnInit {
   private serviceListsService = inject(UserServicesService);
+  private dialog = inject(MatDialog);
+  
+  searchQuery: string = '';
+  displayedColumns: string[] = ['id', 'name', 'price'];
 
-  // --- 検索フォームの状態 ---
-  serviceName = signal<string>('');
+  dataSource = signal<ServiceDetail[]>([]);
+  totalRecords = signal(0);
+  currentPage = signal(0);
+  pageSize = signal(10);
+  isLoading = signal(true);
 
-  // --- リストグリッドとページングの状態 ---
-  data = signal<ServiceDetail[]>([]);
-  pagingConfig = signal<PagingConfig>({
-    totalItems: 0,
-    currentPage: 1,
-    itemsPerPage: 10,
-    maxPageLinks: 5,
-  });
-
-  // --- モーダルの状態 ---
-  isModalOpen = signal(false);
-  selectedServiceDetail = signal<ServiceDetail | null>(null);
-
+  constructor() {
+    this.fetchData();
+  }
   ngOnInit(): void {
-    // 画面ロード時に検索条件なしで検索を実行
-    this.searchServices();
+    throw new Error('Method not implemented.');
   }
 
-  /**
-   * 検索ボタン押下、または画面ロード時にサービス検索を実行する
-   * @param newPage 検索するページ番号 (ページング時のみ使用)
-   */
-  async searchServices(newPage: number = 1): Promise<void> {
-    const searchName = this.serviceName();
-    const itemsPerPage = this.pagingConfig().itemsPerPage;
-    const startIndex = (newPage - 1) * itemsPerPage;
-
-    // 検索条件オブジェクトを作成 (ServiceListsServiceが期待する形式に合わせる)
-    const searchCondition = { name: searchName };
-    const result = await this.serviceListsService.getServiceList(
-      searchCondition.name,
-      startIndex,
-      itemsPerPage,
+  async fetchData(): Promise<void> {
+    this.isLoading.set(true);
+    const response = await this.serviceListsService.getServiceList(
+      this.searchQuery,
+      this.currentPage(),
+      this.pageSize()
     );
+    this.dataSource.set(response.data);
+    this.totalRecords.set(response.totalRecords);
+    this.isLoading.set(false);
+  }
 
-    // 状態を更新
-    this.data.set(result.data);
-    this.pagingConfig.set({
-      ...this.pagingConfig(),
-      totalItems: result.totalRecords,
-      currentPage: newPage,
+  search(pageIndex: number): void {
+    this.currentPage.set(pageIndex);
+    this.fetchData();
+  }
+
+  handlePageEvent(e: PageEvent): void {
+    this.pageSize.set(e.pageSize);
+    this.currentPage.set(e.pageIndex);
+    this.fetchData();
+  }
+
+  openDetail(serviceId: number): void {
+    // サービス詳細画面をポップアップ表示
+    this.dialog.open(ServiceDetailComponent, {
+      data: { serviceId: serviceId },
+      width: '90%',
+      maxWidth: '500px',
     });
-
-    console.log(`検索実行: サービス名='${searchCondition.name}', ページ=${newPage}`);
-  }
-
-  /**
-   * リストグリッドからページ変更イベントを受け取る
-   * @param newPage 新しいページ番号
-   */
-  onPageChange(newPage: number): void {
-    this.searchServices(newPage);
-  }
-
-  /**
-   * リストグリッドのレコードクリックイベントハンドラ
-   * @param serviceId クリックされたレコードのID
-   */
-  onRecordClick(serviceId: string): void {
-    console.log(`サービスID: ${serviceId} の詳細を表示`);
-
-    const serviceDetail = this.data().find((s) => String(s.id) === serviceId) || null;
-
-    if (serviceDetail) {
-      this.selectedServiceDetail.set(serviceDetail);
-      this.isModalOpen.set(true);
-    }
-  }
-
-  /**
-   * モーダルを閉じる
-   */
-  closeModal(): void {
-    this.isModalOpen.set(false);
-    this.selectedServiceDetail.set(null);
   }
 }

@@ -6,11 +6,25 @@ import { AuthService } from 'src/app/bff/auth/auth.service';
 import { LoginRequest } from 'src/app/models/api.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorPayload } from 'src/app/models/api.model';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
+
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -22,11 +36,9 @@ export class LoginComponent {
   // メッセージ表示用プロパティ
   errorMessage: string | null = null;
   isError: boolean = false;
+  isLoading: boolean = false;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   /**
    * ログインボタン押下時のイベントハンドラ
@@ -42,6 +54,8 @@ export class LoginComponent {
       return;
     }
 
+    this.isLoading = true;
+
     const credentials: LoginRequest = {
       email: this.email,
       password: this.password,
@@ -50,10 +64,12 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         // ログイン成功: サービス一覧画面へ遷移
+        this.isLoading = false;
         void this.router.navigate(['/main-page/service-list']);
       },
       error: (err: HttpErrorResponse) => {
         // ログイン失敗
+        this.isLoading = false;
         console.error('ログイン処理中にエラーが発生しました', err);
 
         // エラーメッセージの表示

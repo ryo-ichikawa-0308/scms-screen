@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -18,17 +18,24 @@ import { ContractDetailComponent } from 'src/app/pages/contract-detail/contract-
   selector: 'app-contract-list',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, DecimalPipe,
-    MatCardModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule,
-    MatTableModule, MatPaginatorModule, MatDialogModule
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
   ],
   templateUrl: './contract-list.component.html',
-  styleUrls: ['./contract-list.component.scss']
+  styleUrls: ['./contract-list.component.scss'],
 })
 export class ContractListComponent {
   private contractsService = inject(ContractsService);
   private dialog = inject(MatDialog);
-  
+
   searchQuery: string = '';
   displayedColumns: string[] = ['id', 'name', 'orderQuantity', 'status'];
 

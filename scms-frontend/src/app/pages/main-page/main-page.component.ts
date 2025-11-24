@@ -1,76 +1,33 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { HamburgerMenuComponent } from 'src/app/pages/hamburger-menu/hamburger-menu.component';
-import { MenuItem } from 'src/app/models/hamburger-menu.model';
 import { AuthService } from 'src/app/bff/auth/auth.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-main-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, HamburgerMenuComponent, MatIconModule],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    HamburgerMenuComponent,
+  ],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-  private router = inject(Router);
-  private authService = inject(AuthService);
+  authService = inject(AuthService);
+  router = inject(Router);
 
-  // ヘッダーのタイトル
-  headerTitle = signal('アプリケーション ホーム');
-
-  // ログイン状態
-  isLoggedIn = computed(() => this.authService.isLoggedIn());
-  // ログアウトアクション
-  private logoutAction = () => {
-    // ログアウト処理を実行し、ログイン画面へ遷移
+  logout(): void {
     this.authService.logout();
-    void this.router.navigate(['/']);
-    console.log('ユーザーがログアウトしました。');
-  };
-
-  // リンク設定の定義
-  private serviceLinkConfig: MenuItem = {
-    label: 'サービス一覧',
-    iconKey: 'service',
-    action: () => {
-      void this.router.navigate(['/service-list']);
-    },
-  };
-
-  private contractLinkConfig: MenuItem = {
-    label: '契約一覧',
-    iconKey: 'contract',
-    action: () => {
-      void this.router.navigate(['/contract-list']);
-    },
-  };
-
-  // メニュー項目のリスト: isLoggedIn の値に基づいて自動的にメニュー内容が決定される computed シグナル
-  menuItems = computed<MenuItem[]>(() => {
-    if (this.isLoggedIn()) {
-      return [
-        this.serviceLinkConfig,
-        this.contractLinkConfig,
-        {
-          label: 'ログアウト',
-          iconKey: 'logout',
-          action: this.logoutAction,
-        },
-      ];
-    }
-    // ログアウト状態ではメニュー項目は不要
-    return [];
-  });
-
-  constructor() { }
-
-  /**
-   * ヘッダータイトルを更新するメソッド
-   * @param newTitle 新しいタイトル
-   */
-  updateHeaderTitle(newTitle: string): void {
-    this.headerTitle.set(newTitle);
+    this.router.navigate(['/login']);
   }
 }
