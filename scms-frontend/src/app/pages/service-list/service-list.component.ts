@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, Input } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -32,7 +32,7 @@ import { MatTableModule } from '@angular/material/table';
   templateUrl: './service-list.component.html',
   styleUrls: ['./service-list.component.scss'],
 })
-export class ServiceListComponent implements OnInit {
+export class ServiceListComponent{
   private serviceListsService = inject(UserServicesService);
   private dialog = inject(MatDialog);
   
@@ -47,9 +47,6 @@ export class ServiceListComponent implements OnInit {
 
   constructor() {
     this.fetchData();
-  }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
 
   async fetchData(): Promise<void> {

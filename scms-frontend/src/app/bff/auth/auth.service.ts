@@ -56,6 +56,7 @@ export class AuthService {
       tap((response) => {
         // アクセストークンをセッションストレージに保存
         this.saveAccessToken(response.token);
+        this._isLoggedIn.set(true);
       })
     );
   }
