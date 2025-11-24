@@ -1,22 +1,20 @@
 import { Component, inject } from '@angular/core';
 
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { HamburgerMenuComponent } from 'src/app/pages/hamburger-menu/hamburger-menu.component';
 import { AuthService } from 'src/app/bff/auth/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { CommonModule } from '@angular/common';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-main-page',
   standalone: true,
   imports: [
-    RouterOutlet,
-    RouterModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    HamburgerMenuComponent
+    CommonModule, RouterOutlet, MatToolbarModule, MatButtonModule, 
+    MatIconModule, MatSidenavModule, MatListModule, RouterModule
 ],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss'],

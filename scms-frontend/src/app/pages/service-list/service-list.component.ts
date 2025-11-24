@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-service-list',
   standalone: true,
@@ -32,10 +33,10 @@ import { MatTableModule } from '@angular/material/table';
   templateUrl: './service-list.component.html',
   styleUrls: ['./service-list.component.scss'],
 })
-export class ServiceListComponent{
+export class ServiceListComponent implements OnDestroy {
   private serviceListsService = inject(UserServicesService);
   private dialog = inject(MatDialog);
-  
+  private destroy$ = new Subject<void>();
   searchQuery: string = '';
   displayedColumns: string[] = ['id', 'name', 'price'];
 
@@ -46,7 +47,12 @@ export class ServiceListComponent{
   isLoading = signal(true);
 
   constructor() {
-    this.fetchData();
+     setTimeout(() => this.fetchData(), 0);
+  }
+  
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   async fetchData(): Promise<void> {
