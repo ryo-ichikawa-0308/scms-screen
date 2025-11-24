@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -18,7 +18,6 @@ import { ContractDetailComponent } from 'src/app/pages/contract-detail/contract-
   selector: 'app-contract-list',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatCardModule,
     MatInputModule,
@@ -27,8 +26,8 @@ import { ContractDetailComponent } from 'src/app/pages/contract-detail/contract-
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDialogModule,
-  ],
+    MatDialogModule
+],
   templateUrl: './contract-list.component.html',
   styleUrls: ['./contract-list.component.scss'],
 })

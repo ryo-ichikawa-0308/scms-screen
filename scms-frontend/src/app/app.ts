@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterOutlet } from '@angular/router';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -7,10 +7,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterOutlet, 
+    RouterOutlet,
     MatSnackBarModule
-  ],
+],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })

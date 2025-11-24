@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { AuthService } from 'src/app/bff/auth/auth.service';
 import { LoginRequest } from 'src/app/models/api.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,14 +16,13 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

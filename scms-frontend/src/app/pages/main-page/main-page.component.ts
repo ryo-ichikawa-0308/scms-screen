@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { HamburgerMenuComponent } from 'src/app/pages/hamburger-menu/hamburger-menu.component';
 import { AuthService } from 'src/app/bff/auth/auth.service';
@@ -11,14 +11,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   selector: 'app-main-page',
   standalone: true,
   imports: [
-    CommonModule,
     RouterOutlet,
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    HamburgerMenuComponent,
-  ],
+    HamburgerMenuComponent
+],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss'],
 })
