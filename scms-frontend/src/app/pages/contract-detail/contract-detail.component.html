@@ -11,7 +11,7 @@
         } @else if (detail()) {
             <div class="detail-info">
                 <p><strong>提供者:</strong> {{ detail()!.usersName }}</p>
-                <p><strong>注文数:</strong> {{ detail()!.quantity }}</p>
+                <p><strong>注文数:</strong> {{ detail()!.quantity }}{{ detail()!.unit }}</p>
             </div>
 
             @if (cancellationMessage()) {

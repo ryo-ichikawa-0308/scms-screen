@@ -32,7 +32,7 @@ export interface ContractRequest {
   limit?: number;
 }
 
-// 契約詳細 (注文数とステータスを含む)
+// 契約詳細 (注文数を含む)
 export interface ContractDetail {
   /** ID */
   id: string;
@@ -80,4 +80,13 @@ export interface AccessToken {
 export interface ErrorPayload {
   message?: string;
   detail?: string;
+}
+
+export interface ServiceListApiResponse {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  offset: number;
+  limit: number;
+  userServices: ServiceDetail[];
 }

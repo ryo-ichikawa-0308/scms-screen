@@ -42,11 +42,12 @@ export class ContractDetailComponent {
     this.isProcessing.set(true); // 解約ボタンを不活化
     this.cancellationMessage.set(null);
     const contractId = this.detail()!.id || '';
+    const serviceName = this.detail()!.name || '';
 
     const success = await this.contractsService.executeCancellation(contractId);
 
     if (success) {
-      this.cancellationMessage.set(`解約が完了しました。契約ID: ${contractId}`);
+      this.cancellationMessage.set(`解約が完了しました。サービス: ${serviceName}`);
       this.isCancellationSuccess.set(true);
       this.isProcessing.set(false);
     } else {

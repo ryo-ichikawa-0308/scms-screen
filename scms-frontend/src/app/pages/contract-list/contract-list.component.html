@@ -20,11 +20,6 @@
             <!-- グリッド描画領域 -->
             <div class="mat-elevation-z2 grid-container">
                 <table mat-table [dataSource]="dataSource()">
-                    <!-- ID Column -->
-                    <ng-container matColumnDef="id">
-                        <th mat-header-cell *matHeaderCellDef class="id-column"> 契約ID </th>
-                        <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
-                    </ng-container>
 
                     <!-- Name Column -->
                     <ng-container matColumnDef="name">
@@ -32,23 +27,24 @@
                         <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
                     </ng-container>
 
+                    <!-- Supplier Column -->
+                    <ng-container matColumnDef="usersName">
+                        <th mat-header-cell *matHeaderCellDef> 提供者 </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.usersName }} </td>
+                    </ng-container>
+
                     <!-- Quantity Column -->
-                    <ng-container matColumnDef="orderQuantity">
+                    <ng-container matColumnDef="quantity">
                         <th mat-header-cell *matHeaderCellDef class="quantity-column"> 注文数 </th>
-                        <td mat-cell *matCellDef="let element"> {{ element.orderQuantity }} </td>
+                        <td mat-cell *matCellDef="let element"> {{ element.quantity }} {{ element.unit }}</td>
                     </ng-container>
 
-                    <!-- Status Column -->
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef class="status-column"> ステータス </th>
-                        <td mat-cell *matCellDef="let element">
-                            <span [class.active-status]="element.status === 'active'" 
-                                  [class.cancelled-status]="element.status === 'cancelled'">
-                                {{ element.status === 'active' ? '有効' : '解約済み' }}
-                            </span>
-                        </td>
+                    <!-- Unit Column -->
+                    <ng-container matColumnDef="unit">
+                        <th mat-header-cell *matHeaderCellDef class="unit-column"> 単位 </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.unit }} </td>
                     </ng-container>
-
+               
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <!-- グリッドクリックで契約詳細画面をポップアップ -->
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="clickable-row" (click)="openDetail(row.id)"></tr>

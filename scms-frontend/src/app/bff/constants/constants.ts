@@ -18,7 +18,7 @@ export const USER_SERVICE_ENDPOINTS = {
   // サービス一覧取得 (POST /services)
   LIST: `${BASE_URL}/user-services/list`,
   // サービス詳細取得 (GET /services/{id})
-  DETAIL: (id: string) => `${BASE_URL}/user-services/${id}`,
+  DETAIL: `${BASE_URL}/user-services`,
 };
 
 /**

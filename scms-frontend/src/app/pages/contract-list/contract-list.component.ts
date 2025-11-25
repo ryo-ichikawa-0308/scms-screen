@@ -36,7 +36,7 @@ export class ContractListComponent {
   private dialog = inject(MatDialog);
 
   searchQuery: string = '';
-  displayedColumns: string[] = ['id', 'name', 'orderQuantity', 'status'];
+  displayedColumns: string[] = [ 'name', 'usersName', 'quantity', 'unit'];
 
   dataSource = signal<ContractDetail[]>([]);
   totalRecords = signal(0);

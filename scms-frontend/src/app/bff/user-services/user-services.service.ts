@@ -1,65 +1,79 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { PaginatedResponse, ServiceDetail } from 'src/app/models/api.model';
+import { inject, Injectable } from '@angular/core';
+import { PaginatedResponse, ServiceDetail, ServiceListApiResponse } from 'src/app/models/api.model';
+import { USER_SERVICE_ENDPOINTS } from '../constants/constants';
+import { catchError, map, Observable, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserServicesService {
+  private readonly SERVICE_LIST_URL = USER_SERVICE_ENDPOINTS.LIST;
+  private readonly SERVICE_DETAIL_URL = USER_SERVICE_ENDPOINTS.DETAIL;
   constructor(private http: HttpClient) {}
-  // ダミーデータ
-  private services: ServiceDetail[] = Array.from({ length: 50 }, (_, i) => ({
-    id: String(i + 1),
-    servicesId: String(i + 1),
-    name: `サービス A-${i + 1}`,
-    usersName: `サービス A-${i + 1} 提供者`,
-    price: 1000 + i * 10,
-    description: `これはサービス A-${i + 1} の詳細な説明です。`,
-    stock: Math.floor(Math.random() * 10) + 1,
-    unit: '個',
-  }));
-  // モックAPIコール: ページングされたサービス一覧
+  private snackBar = inject(MatSnackBar);
+
+  /**
+   * サービス一覧を取得する
+   * @param query サービス名
+   * @param pageIndex 開始ページ
+   * @param pageSize 件数
+   */
   getServiceList(
     query: string,
     pageIndex: number,
-    pageSize: number
-  ): Promise<PaginatedResponse<ServiceDetail>> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filtered = this.services.filter(
-          (s) => s.name || ''.toLowerCase().includes(query.toLowerCase())
-        );
-        const start = pageIndex * pageSize;
-        const end = start + pageSize;
-        const data = filtered.slice(start, end);
-
-        resolve({
-          totalRecords: filtered.length,
-          totalPages: Math.ceil(filtered.length / pageSize),
+    pageSize: number,
+  ): Observable<PaginatedResponse<ServiceDetail>> {
+    const payload = {
+      serviceName: query,
+      offset: pageIndex * pageSize,
+      limit: pageSize,
+    };
+    return this.http.post<ServiceListApiResponse>(this.SERVICE_LIST_URL, payload).pipe(
+        map(apiResponse => {
+            console.log("API Response received:", apiResponse);
+            const servicesData = apiResponse.userServices || [];
+            const transformedResponse: PaginatedResponse<ServiceDetail> = {
+                totalRecords: apiResponse.totalCount,
+                totalPages: apiResponse.totalPages,
+                currentPage: apiResponse.currentPage,
+                offset: apiResponse.offset,
+                limit: apiResponse.limit,
+                data: servicesData
+            };
+            console.log("transformed response:", transformedResponse);
+            return transformedResponse;
+        }),
+      catchError((error) => {
+        this.snackBar.open('API接続エラーが発生しました。', '閉じる', { duration: 3000 });
+        console.error('サービス一覧の取得に失敗しました:', error);
+        return of({
+          totalRecords: 0,
+          totalPages: 0,
           currentPage: pageIndex,
-          offset: start,
+          offset: payload.offset,
           limit: pageSize,
-          data: data.map((d) => ({
-            id: d.id,
-            name: d.name,
-            price: d.price,
-            unit: d.unit,
-            stock: d.stock,
-            usersName: d.usersName,
-            servicesId: d.servicesId,
-            description: d.description,
-          })),
+          data: [],
         });
-      }, 500);
-    });
+      }),
+    );
   }
 
-  // モックAPIコール: サービス詳細
-  getServiceDetail(id: string): Promise<ServiceDetail | undefined> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(this.services.find((s) => s.id === id));
-      }, 500);
-    });
+  /**
+   * ユーザー提供サービス詳細を取得する
+   * @param id サービスID
+   * @returns ユーザー提供サービス詳細
+   */
+  getServiceDetail(id: string): Observable<ServiceDetail | undefined> {
+    return this.http
+      .get<ServiceDetail>(`${this.SERVICE_DETAIL_URL}/${id}`)
+      .pipe(
+        catchError((error) => {
+          console.error('サービス詳細の取得に失敗しました:', error);
+          this.snackBar.open('API接続エラーが発生しました。', '閉じる', { duration: 3000 });
+          return of(undefined);
+        }),
+      );
   }
 }
