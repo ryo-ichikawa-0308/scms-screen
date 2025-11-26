@@ -36,7 +36,6 @@ export class ContractsService {
     };
     return this.http.post<ContractListApiResponse>(this.CONTRACT_LIST_URL, payload).pipe(
       map(apiResponse => {
-        console.log("API Response received:", apiResponse);
         const contracts = apiResponse.contracts || [];
         const transformedResponse: PaginatedResponse<ContractDetail> = {
           totalRecords: apiResponse.totalCount,
@@ -46,7 +45,6 @@ export class ContractsService {
           limit: apiResponse.limit,
           data: contracts
         };
-        console.log("transformed response:", transformedResponse);
         return transformedResponse;
       }),
       catchError((error) => {
@@ -108,7 +106,7 @@ export class ContractsService {
    */
   executeCancellation(contractId: string): Observable<void | undefined> {
     return this.http
-      .patch<void>(`${this.CONTRACT_CANCEL_URL}/${contractId}`, { responseType: 'text' })
+      .patch<void>(`${this.CONTRACT_CANCEL_URL}/${contractId}`, {})
       .pipe(
         catchError((error) => {
           console.error('解約に失敗しました。:', error);

@@ -46,6 +46,10 @@ export interface ContractDetail {
   name: string;
   /** 単位 */
   unit: string;
+  /** 単価 */
+  price: number;
+  /** 在庫数 */
+  stock: number;
 }
 
 // APIグリッドのレスポンス構造

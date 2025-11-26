@@ -33,7 +33,6 @@ export class UserServicesService {
     };
     return this.http.post<ServiceListApiResponse>(this.SERVICE_LIST_URL, payload).pipe(
       map(apiResponse => {
-        console.log("API Response received:", apiResponse);
         const servicesData = apiResponse.userServices || [];
         const transformedResponse: PaginatedResponse<ServiceDetail> = {
           totalRecords: apiResponse.totalCount,
@@ -43,7 +42,6 @@ export class UserServicesService {
           limit: apiResponse.limit,
           data: servicesData
         };
-        console.log("transformed response:", transformedResponse);
         return transformedResponse;
       }),
       catchError((error) => {

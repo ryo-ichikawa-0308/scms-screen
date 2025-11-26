@@ -10,8 +10,8 @@
             <div class="loading-area"><mat-icon class="spinner">autorenew</mat-icon> 読み込み中...</div>
         } @else if (detail()) {
             <div class="detail-info">
-                <p><strong>価格:</strong> ¥{{ detail()!.price | number }}</p>
-                <p><strong>在庫:</strong> <span [class.out-of-stock]="detail()!.stock === 0">{{ detail()!.stock }}</span></p>
+                <p><strong>価格:</strong> {{ detail()!.price | number }}円</p>
+                <p><strong>在庫:</strong> <span [class.out-of-stock]="detail()!.stock === 0">{{ detail()!.stock }}{{ detail()!.unit }}</span></p>
                 <p class="description">{{ detail()!.description }}</p>
             </div>
 

@@ -1,6 +1,6 @@
 <mat-card class="detail-card">
     <mat-card-header class="dialog-header">
-        <mat-card-title>{{ detail()?.name || '契約詳細' }} (ID: {{ detail()?.id }})</mat-card-title>
+        <mat-card-title>サービス名: {{ detail()?.name }}</mat-card-title>
         <button mat-icon-button (click)="dialogRef.close()" class="close-button">
             <mat-icon>close</mat-icon>
         </button>
@@ -11,7 +11,9 @@
         } @else if (detail()) {
             <div class="detail-info">
                 <p><strong>提供者:</strong> {{ detail()!.usersName }}</p>
+                <p><strong>単価:</strong> {{ detail()!.price | number }}円</p>
                 <p><strong>注文数:</strong> {{ detail()!.quantity }}{{ detail()!.unit }}</p>
+                <p><strong>合計:</strong> {{ total() | number }}円</p>
             </div>
 
             @if (cancellationMessage()) {

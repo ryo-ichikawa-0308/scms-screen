@@ -8,11 +8,12 @@ import { MatCardModule } from '@angular/material/card';
 import { ContractsService } from 'src/app/bff/contracts/contracts.service';
 import { ContractDetail } from 'src/app/models/api.model';
 import { catchError, of, tap } from 'rxjs';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-contract-detail-dialog',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatCardModule],
+  imports: [MatButtonModule, MatIconModule, MatCardModule, DecimalPipe,],
   templateUrl: './contract-detail.component.html',
   styleUrls: ['./contract-detail.component.scss'],
 })
@@ -22,6 +23,7 @@ export class ContractDetailComponent {
   public data: { contractId: string } = inject(MAT_DIALOG_DATA);
 
   detail = signal<ContractDetail | undefined>(undefined);
+  total = signal(0);
   isLoading = signal(true);
   isProcessing = signal(false);
   cancellationMessage = signal<string | null>(null);
@@ -42,6 +44,7 @@ export class ContractDetailComponent {
       .pipe(tap())
       .subscribe((result) => {
         this.detail.set(result);
+        this.total.set((result?.price ?? 0) * (result?.quantity ?? 0));
         this.isLoading.set(false);
       });
   }

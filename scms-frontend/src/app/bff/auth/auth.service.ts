@@ -1,9 +1,10 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import {
   ACCESS_TOKEN_EXPIRES_KEY,
   ACCESS_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
   AUTH_ENDPOINTS,
 } from 'src/app/bff/constants/constants';
 import { AccessToken, LoginRequest, LoginResponse } from 'src/app/models/api.model';
@@ -16,6 +17,7 @@ export class AuthService {
   private readonly REFRESH_URL = AUTH_ENDPOINTS.REFRESH_TOKEN;
   private readonly ACCESS_TOKEN_KEY = ACCESS_TOKEN_KEY;
   private readonly ACCESS_TOKEN_EXPIRES_KEY = ACCESS_TOKEN_EXPIRES_KEY;
+  private readonly REFRESH_TOKEN_KEY = REFRESH_TOKEN_KEY;
 
   // リフレッシュ処理の状態管理 (多重リフレッシュを防ぐため)
   private isRefreshing = false;
@@ -30,7 +32,7 @@ export class AuthService {
   // 外部から参照するためのRead-only Signal
   public isLoggedIn = computed(() => this._isLoggedIn());
 
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(private http: HttpClient, private cookieService: CookieService) { }
 
   // 初期セッションチェックロジック（ローカルストレージを確認）
   private checkInitialSession(): boolean {
@@ -95,30 +97,40 @@ export class AuthService {
    * トークンリフレッシュAPIを呼び出す
    */
   refreshToken(): Observable<AccessToken> {
+    // 1. Cookieからリフレッシュトークンを取得
+    const refreshToken = this.cookieService.get(this.REFRESH_TOKEN_KEY);
+    if (!refreshToken) {
+      console.warn('リフレッシュトークンがCookieに見つかりません。強制ログアウトします。');
+      this.logout();
+      return throwError(() => new Error('リフレッシュトークンが見つからないため強制ログアウト'));
+    }
+
     // 多重呼び出し防止と Subject の利用
     if (this.isRefreshing) {
       // リフレッシュ中の場合は、Subject が発火するまで待機
-      return throwError(() => new Error('Token refresh already in progress.'));
+      return throwError(() => new Error('リフレッシュ実行中です。'));
     }
 
     this.isRefreshing = true;
-    // Subjectを初期化 (nullにしておき、新しいトークンが来たら流す)
     this.refreshTokenSubject.next(null);
 
-    return this.http.post<AccessToken>(this.REFRESH_URL, {}).pipe(
+// 2. リフレッシュトークンをヘッダーに設定
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${refreshToken}`, 
+  });
+  
+  return this.http.post<AccessToken>(this.REFRESH_URL, {}).pipe(
       tap((response) => {
         // 成功時
         this.saveAccessToken(response);
-
-        // リフレッシュ完了を通知し、新しいトークンを流す
         this.isRefreshing = false;
         this.refreshTokenSubject.next(response.accessToken);
       }),
-      catchError((err: Observable<AccessToken>) => {
+      catchError((err: HttpErrorResponse) => {
         // 失敗時
         this.isRefreshing = false;
-        this.refreshTokenSubject.next(null); // 通知をリセット
-        this.logout(); // 強制ログアウト
+        this.refreshTokenSubject.next(null);
+        this.logout();
         return throwError(() => err);
       })
     );

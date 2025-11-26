@@ -20,6 +20,12 @@ function addToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown
   });
 }
 
+/**
+ * リクエスト実行前処理。アクセストークンの有効性チェックとリフレッシュを行う。
+ * @param req 元のHttpRequest
+ * @param next HttpHandlerの次の処理
+ * @returns HttpEventのObservable
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);

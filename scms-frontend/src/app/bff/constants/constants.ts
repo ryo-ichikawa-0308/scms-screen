@@ -1,5 +1,6 @@
 export const ACCESS_TOKEN_KEY = 'accessToken';
 export const ACCESS_TOKEN_EXPIRES_KEY = 'accessTokenExpires';
+export const REFRESH_TOKEN_KEY = 'refresh_token';
 
 const BASE_URL = '/api/v1';
 export const AUTH_ENDPOINTS = {
