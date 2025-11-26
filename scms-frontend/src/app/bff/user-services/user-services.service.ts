@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class UserServicesService {
   private readonly SERVICE_LIST_URL = USER_SERVICE_ENDPOINTS.LIST;
   private readonly SERVICE_DETAIL_URL = USER_SERVICE_ENDPOINTS.DETAIL;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   private snackBar = inject(MatSnackBar);
 
   /**
@@ -19,6 +19,7 @@ export class UserServicesService {
    * @param query サービス名
    * @param pageIndex 開始ページ
    * @param pageSize 件数
+   * @returns サービス一覧データ
    */
   getServiceList(
     query: string,
@@ -31,20 +32,20 @@ export class UserServicesService {
       limit: pageSize,
     };
     return this.http.post<ServiceListApiResponse>(this.SERVICE_LIST_URL, payload).pipe(
-        map(apiResponse => {
-            console.log("API Response received:", apiResponse);
-            const servicesData = apiResponse.userServices || [];
-            const transformedResponse: PaginatedResponse<ServiceDetail> = {
-                totalRecords: apiResponse.totalCount,
-                totalPages: apiResponse.totalPages,
-                currentPage: apiResponse.currentPage,
-                offset: apiResponse.offset,
-                limit: apiResponse.limit,
-                data: servicesData
-            };
-            console.log("transformed response:", transformedResponse);
-            return transformedResponse;
-        }),
+      map(apiResponse => {
+        console.log("API Response received:", apiResponse);
+        const servicesData = apiResponse.userServices || [];
+        const transformedResponse: PaginatedResponse<ServiceDetail> = {
+          totalRecords: apiResponse.totalCount,
+          totalPages: apiResponse.totalPages,
+          currentPage: apiResponse.currentPage,
+          offset: apiResponse.offset,
+          limit: apiResponse.limit,
+          data: servicesData
+        };
+        console.log("transformed response:", transformedResponse);
+        return transformedResponse;
+      }),
       catchError((error) => {
         this.snackBar.open('API接続エラーが発生しました。', '閉じる', { duration: 3000 });
         console.error('サービス一覧の取得に失敗しました:', error);

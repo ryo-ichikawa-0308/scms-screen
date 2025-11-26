@@ -82,6 +82,7 @@ export interface ErrorPayload {
   detail?: string;
 }
 
+// APIからのユーザー提供サービスリスト生データ型
 export interface ServiceListApiResponse {
   totalCount: number;
   totalPages: number;
@@ -89,4 +90,14 @@ export interface ServiceListApiResponse {
   offset: number;
   limit: number;
   userServices: ServiceDetail[];
+}
+
+// APIからの契約リスト生データ型
+export interface ContractListApiResponse {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  offset: number;
+  limit: number;
+  contracts: ContractDetail[];
 }

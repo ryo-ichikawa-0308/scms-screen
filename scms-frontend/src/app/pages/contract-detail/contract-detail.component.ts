@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 
 import { ContractsService } from 'src/app/bff/contracts/contracts.service';
 import { ContractDetail } from 'src/app/models/api.model';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-contract-detail-dialog',
@@ -30,13 +31,26 @@ export class ContractDetailComponent {
     this.fetchContractDetail(this.data.contractId);
   }
 
-  async fetchContractDetail(id: string): Promise<void> {
+  /**
+   * 契約詳細検索
+   * @param id 契約ID
+   */
+  fetchContractDetail(id: string): void {
     this.isLoading.set(true);
-    this.detail.set(await this.contractsService.getContractDetail(id));
-    this.isLoading.set(false);
+    this.contractsService
+      .getContractDetail(id)
+      .pipe(tap())
+      .subscribe((result) => {
+        this.detail.set(result);
+        this.isLoading.set(false);
+      });
   }
 
-  async executeCancellation(): Promise<void> {
+  /**
+   * 解約
+   * @returns void
+   */
+  executeCancellation(): void {
     if (!this.detail()) return;
 
     this.isProcessing.set(true); // 解約ボタンを不活化
@@ -44,16 +58,22 @@ export class ContractDetailComponent {
     const contractId = this.detail()!.id || '';
     const serviceName = this.detail()!.name || '';
 
-    const success = await this.contractsService.executeCancellation(contractId);
-
-    if (success) {
-      this.cancellationMessage.set(`解約が完了しました。サービス: ${serviceName}`);
-      this.isCancellationSuccess.set(true);
-      this.isProcessing.set(false);
-    } else {
-      this.cancellationMessage.set('解約に失敗しました。時間をおいて再度お試しください。');
-      this.isCancellationSuccess.set(false);
-      this.isProcessing.set(false); // 失敗時はボタンを再活性化
-    }
+    this.contractsService
+      .executeCancellation(contractId)
+      .pipe(
+        catchError((error) => {
+          console.error(error);
+          this.cancellationMessage.set('解約に失敗しました。時間をおいて再度お試しください。');
+          this.isCancellationSuccess.set(false);
+          this.isProcessing.set(false); // 失敗時はボタンを再活性化
+          return of();
+        }),
+      )
+      .subscribe((result) => {
+        console.log('contract: ', result);
+        this.cancellationMessage.set(`解約が完了しました。サービス: ${serviceName}`);
+        this.isCancellationSuccess.set(true);
+        this.isProcessing.set(false);
+      });
   }
 }

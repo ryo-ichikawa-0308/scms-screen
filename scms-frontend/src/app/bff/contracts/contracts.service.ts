@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { PaginatedResponse, ContractDetail } from 'src/app/models/api.model';
+import { PaginatedResponse, ContractDetail, ContractListApiResponse } from 'src/app/models/api.model';
 import { CONTRACT_ENDPOINTS } from '../constants/constants';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -10,19 +10,76 @@ import { MatSnackBar } from '@angular/material/snack-bar';
  */
 @Injectable({ providedIn: 'root' })
 export class ContractsService {
+  private readonly CONTRACT_LIST_URL = CONTRACT_ENDPOINTS.LIST;
+  private readonly CONTRACT_DETAIL_URL = CONTRACT_ENDPOINTS.DETAIL;
   private readonly CONTRACT_CREATE_URL = CONTRACT_ENDPOINTS.CREATE;
-  constructor(private http: HttpClient) {}
+  private readonly CONTRACT_CANCEL_URL = CONTRACT_ENDPOINTS.CANCEL;
+  constructor(private http: HttpClient) { }
   private snackBar = inject(MatSnackBar);
-  // ダミーデータ
-  private contracts: ContractDetail[] = Array.from({ length: 20 }, (_, i) => ({
-    id: String(1000 + i + 1),
-    name: `契約サービス C-${i + 1}`,
-    userServicesId: String(1000 + i + 1),
-    usersName: `契約サービス C-${i + 1}提供者`,
-    price: 5000,
-    unit: '個',
-    quantity: Math.floor(Math.random() * 3) + 1,
-  }));
+
+  /**
+   * 契約一覧取得
+   * @param query サービス名
+   * @param pageIndex 開始ページ
+   * @param pageSize 件数
+   * @returns 契約一覧データ
+   */
+  getContractList(
+    query: string,
+    pageIndex: number,
+    pageSize: number,
+  ): Observable<PaginatedResponse<ContractDetail>> {
+    const payload = {
+      serviceName: query,
+      offset: pageIndex * pageSize,
+      limit: pageSize,
+    };
+    return this.http.post<ContractListApiResponse>(this.CONTRACT_LIST_URL, payload).pipe(
+      map(apiResponse => {
+        console.log("API Response received:", apiResponse);
+        const contracts = apiResponse.contracts || [];
+        const transformedResponse: PaginatedResponse<ContractDetail> = {
+          totalRecords: apiResponse.totalCount,
+          totalPages: apiResponse.totalPages,
+          currentPage: apiResponse.currentPage,
+          offset: payload.offset,
+          limit: apiResponse.limit,
+          data: contracts
+        };
+        console.log("transformed response:", transformedResponse);
+        return transformedResponse;
+      }),
+      catchError((error) => {
+        this.snackBar.open('API接続エラーが発生しました。', '閉じる', { duration: 3000 });
+        console.error('契約一覧の取得に失敗しました:', error);
+        return of({
+          totalRecords: 0,
+          totalPages: 0,
+          currentPage: pageIndex,
+          offset: payload.offset,
+          limit: pageSize,
+          data: [],
+        });
+      }),
+    );
+  }
+
+  /**
+   * 契約詳細の取得
+   * @param id 
+   * @returns 契約詳細
+   */
+  getContractDetail(id: string): Observable<ContractDetail | undefined> {
+    return this.http
+      .get<ContractDetail>(`${this.CONTRACT_DETAIL_URL}/${id}`)
+      .pipe(
+        catchError((error) => {
+          console.error('契約詳細の取得に失敗しました:', error);
+          this.snackBar.open('API接続エラーが発生しました。', '閉じる', { duration: 3000 });
+          return of(undefined);
+        }),
+      );
+  }
 
   /**
    * サービスを契約する
@@ -44,52 +101,20 @@ export class ContractsService {
     );
   }
 
-  // モックAPIコール: ページングされた契約一覧
-  getContractList(
-    query: string,
-    pageIndex: number,
-    pageSize: number,
-  ): Promise<PaginatedResponse<ContractDetail>> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filtered = this.contracts.filter(
-          (c) => c.name || ''.toLowerCase().includes(query.toLowerCase()),
-        );
-        const start = pageIndex * pageSize;
-        const end = start + pageSize;
-        const data = filtered.slice(start, end);
-
-        resolve({
-          totalRecords: filtered.length,
-          totalPages: Math.ceil(filtered.length / pageSize),
-          currentPage: pageIndex,
-          offset: start,
-          limit: pageSize,
-          data: data,
-        });
-      }, 500);
-    });
-  }
-
-  // モックAPIコール: 契約詳細
-  getContractDetail(id: string): Promise<ContractDetail | undefined> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(this.contracts.find((c) => c.id === id));
-      }, 500);
-    });
-  }
-
-  // モックAPIコール: 解約処理
-  executeCancellation(contractId: string): Promise<boolean> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const success = Math.random() > 0.1;
-        if (success) {
-          console.log(`解約成功: 契約ID ${contractId}`);
-        }
-        resolve(success);
-      }, 1500);
-    });
+  /**
+   * サービスを解約する
+   * @param contractId 契約ID
+   * @returns void
+   */
+  executeCancellation(contractId: string): Observable<void | undefined> {
+    return this.http
+      .patch<void>(`${this.CONTRACT_CANCEL_URL}/${contractId}`, { responseType: 'text' })
+      .pipe(
+        catchError((error) => {
+          console.error('解約に失敗しました。:', error);
+          this.snackBar.open('API接続エラーが発生しました。', '閉じる', { duration: 3000 });
+          return of(undefined);
+        }),
+      );
   }
 }
