@@ -1,0 +1,45 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.full-width {
+    width: 100%;
+}
+
+.margin-top {
+    margin-top: 1rem;
+}
+
+.error-message {
+    color: #f44336; /* mat-warn color */
+    background-color: #ffebee;
+    border: 1px solid #f44336;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.button-container {
+    margin-top: 1.5rem;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

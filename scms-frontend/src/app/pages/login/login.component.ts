@@ -1,79 +1,84 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // [(ngModel)] のために必要
-import { Router } from '@angular/router'; // 画面遷移のために必要
-import { CommonModule } from '@angular/common'; // *ngIf のために必要
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
-// 作成/既存のコンポーネントとサービスをインポート
-import { AuthService } from '../../core/auth/auth.service';
-import { HeaderComponent } from '../../components/header/header.component'; 
-import { FooterComponent } from '../../components/footer/footer.component';
-import { ButtonComponent } from '../../components/button/button.component'; 
-import { LabelComponent } from '../../components/label/label.component'; 
-// TextboxComponentは、ここでは標準のinputタグを使用します
+import { AuthService } from 'src/app/bff/auth/auth.service';
+import { LoginRequest } from 'src/app/models/api.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorPayload } from 'src/app/models/api.model';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule, 
-    HeaderComponent, 
-    FooterComponent, 
-    ButtonComponent,
-    LabelComponent,
-  ],
-  templateUrl: './login.html',
-  styleUrls: ['./login.scss'] 
+    FormsModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule
+],
+
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   // フォームデータとバインドするプロパティ
   email: string = '';
   password: string = '';
-  
+
   // メッセージ表示用プロパティ
   errorMessage: string | null = null;
   isError: boolean = false;
+  isLoading: boolean = false;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   /**
    * ログインボタン押下時のイベントハンドラ
    */
   handleLogin(): void {
-    this.errorMessage = null; // エラーメッセージをリセット
+    this.errorMessage = null;
     this.isError = false;
 
     // 簡易バリデーション
-    if (!this.email || !this.email) {
+    if (!this.email || !this.password) {
       this.errorMessage = 'ユーザーIDとパスワードを入力してください。';
       this.isError = true;
       return;
     }
 
-    const credentials = {
+    this.isLoading = true;
+
+    const credentials: LoginRequest = {
       email: this.email,
-      password: this.password
+      password: this.password,
     };
 
-    // 認証サービスを呼び出し
     this.authService.login(credentials).subscribe({
       next: () => {
         // ログイン成功: サービス一覧画面へ遷移
-        // NOTE: ルーティングパスは app.routes.ts で定義されたものに修正してください
-        this.router.navigate(['/service-list']); 
+        this.isLoading = false;
+        void this.router.navigate(['/main-page/service-list']);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         // ログイン失敗
+        this.isLoading = false;
         console.error('ログイン処理中にエラーが発生しました', err);
-        
+
         // エラーメッセージの表示
-        // バックエンドからのエラーメッセージがあればそれを優先し、なければ汎用メッセージを表示
-        this.errorMessage = err.error?.message || 'ログインに失敗しました。ユーザーIDまたはパスワードをご確認ください。';
+        const apiError = err.error as ErrorPayload;
+
+        this.errorMessage =
+          apiError?.message ||
+          'ログインに失敗しました。ユーザーIDまたはパスワードをご確認ください。';
         this.isError = true;
-      }
+      },
     });
   }
 }

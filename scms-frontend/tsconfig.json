@@ -4,16 +4,22 @@
   "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
+    "esModuleInterop": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"]
+    },  
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

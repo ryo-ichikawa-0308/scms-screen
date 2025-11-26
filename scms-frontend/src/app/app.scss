@@ -1,0 +1,11 @@
+/* グローバルなスタイル設定 */
+:host {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
