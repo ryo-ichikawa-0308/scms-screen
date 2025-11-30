@@ -41,7 +41,6 @@ export class ContractDetailComponent {
     this.isLoading.set(true);
     this.contractsService
       .getContractDetail(id)
-      .pipe(tap())
       .subscribe((result) => {
         this.detail.set(result);
         this.total.set((result?.price ?? 0) * (result?.quantity ?? 0));

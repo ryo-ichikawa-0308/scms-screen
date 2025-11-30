@@ -55,7 +55,6 @@ export class ServiceDetailComponent {
     this.isLoading.set(true);
     this.userServicesService
       .getServiceDetail(id)
-      .pipe(tap())
       .subscribe((result) => {
         this.detail.set(result);
         this.isLoading.set(false);

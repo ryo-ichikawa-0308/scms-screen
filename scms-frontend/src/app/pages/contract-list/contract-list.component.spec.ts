@@ -31,6 +31,7 @@ const MOCK_PAGINATED_RESPONSE: PaginatedResponse<ContractDetail> = {
 // ContractsServiceのモック
 const mockContractsService = {
   getContractList: jasmine.createSpy('getContractList').and.returnValue(of(MOCK_PAGINATED_RESPONSE)),
+  getContractDetail: jasmine.createSpy('getContractDetail').and.returnValue(of(MOCK_CONTRACT_LIST[0])),
 };
 
 // MatDialogのモック
