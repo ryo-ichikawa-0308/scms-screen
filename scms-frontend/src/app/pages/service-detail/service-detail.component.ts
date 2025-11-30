@@ -67,7 +67,13 @@ export class ServiceDetailComponent {
    * @returns void
    */
   executeContract(): void {
-    if (!this.detail() || this.orderQuantity < 1) return;
+    if (
+      !this.detail() ||
+      this.orderQuantity == null ||
+      this.orderQuantity < 1 ||
+      this.orderQuantity > (this.detail()?.stock ?? 0)
+    )
+      return;
 
     this.isProcessing.set(true); // 契約ボタンを不活化
     this.contractMessage.set(null);
