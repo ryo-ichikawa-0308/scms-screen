@@ -45,15 +45,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         // A. リフレッシュ中でない かつ ローカルで期限切れの場合 -> リフレッシュ開始
         if (!authService.getIsRefreshing() && authService.isAccessTokenExpired()) {
           return authService.refreshToken().pipe(
-            // リフレッシュが完了し、新しいトークンが取得されるのを待機 (Subjectから通知を受ける)
-            // SubjectはrefreshToken()内で既にnext(null)されているため、
-            // 成功時の next(newToken) が来るのを待ちます。
             switchMap((response) => {
-              // 新しいトークンで元のリクエストを再試行
-              return next(addToken(req, response.accessToken));
+              console.log('更新したアクセストークンでAPIリトライします。');
+              return next(addToken(req, response.token.accessToken));
             }),
-            catchError((refreshError: Observable<HttpEvent<unknown>>) => {
-              // リフレッシュ失敗 -> ログアウト
+            catchError((refreshError: HttpErrorResponse) => {
+              authService.logout();
               void router.navigate(['/login']);
               return throwError(() => refreshError);
             }),
@@ -63,11 +60,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         // B. リフレッシュ中の場合 -> Subject から新しいトークンが来るまで待機
         else if (authService.getIsRefreshing()) {
           return authService.getRefreshTokenSubject().pipe(
-            // Subjectに値が流れるのを待ち、nullでない(トークンが来たら)フィルタリング
             filter((token) => token !== null),
-            // 一度だけ値を取得したら、ストリームを完了
             take(1),
-            // 新しいトークンで元のリクエストを再試行
             switchMap((newToken) => {
               return next(addToken(req, newToken));
             }),

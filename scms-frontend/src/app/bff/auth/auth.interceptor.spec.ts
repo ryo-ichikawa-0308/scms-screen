@@ -1,12 +1,12 @@
 
 import { TestBed } from '@angular/core/testing';
-import { HttpTestingController,  provideHttpClientTesting } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient, HttpErrorResponse ,provideHttpClient} from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HTTP_INTERCEPTORS, HttpClient, HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { AccessToken } from 'src/app/models/api.model';
+import { AccessToken, RefreshResponse } from 'src/app/models/api.model';
 
 describe('AuthInterceptor', () => {
   let httpMock: HttpTestingController;
@@ -15,7 +15,7 @@ describe('AuthInterceptor', () => {
   let router: Router;
 
   const MOCK_TOKEN = 'valid_token';
-  const REFRESH_TOKEN_RESPONSE: AccessToken = { accessToken: 'new_token', expiresIn: 3600 };
+  const REFRESH_TOKEN_RESPONSE: RefreshResponse = { token: { accessToken: 'new_token', expiresIn: 3600 } };
   const TEST_URL = '/test-api';
 
   beforeEach(() => {
@@ -42,7 +42,7 @@ describe('AuthInterceptor', () => {
     spyOn(authService, 'logout');
   });
 
-afterEach(() => {
+  afterEach(() => {
     httpMock.verify();
   });
 
@@ -100,7 +100,7 @@ afterEach(() => {
 
         // 2. 再試行されたHTTPリクエスト (新しいトークンを検証)
         let retryReq = httpMock.expectOne(TEST_URL);
-        expect(retryReq.request.headers.get('Authorization')).toBe(`Bearer ${REFRESH_TOKEN_RESPONSE.accessToken}`);
+        expect(retryReq.request.headers.get('Authorization')).toBe(`Bearer ${REFRESH_TOKEN_RESPONSE.token.accessToken}`);
         retryReq.flush({ data: 'retry_ok' }); // 成功レスポンス
       });
 

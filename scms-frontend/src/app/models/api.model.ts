@@ -80,6 +80,10 @@ export interface AccessToken {
   expiresIn: number;
 }
 
+export interface RefreshResponse {
+  token: AccessToken;
+}
+
 // エラー
 export interface ErrorPayload {
   message?: string;
