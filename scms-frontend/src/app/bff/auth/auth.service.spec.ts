@@ -3,13 +3,12 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { AuthService } from './auth.service';
 import { CookieService } from 'ngx-cookie-service';
 import { AUTH_ENDPOINTS } from '../constants/constants';
-import { LoginRequest, LoginResponse, AccessToken, RefreshResponse } from 'src/app/models/api.model';
+import { LoginRequest, LoginResponse, RefreshResponse } from 'src/app/models/api.model';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let cookieService: CookieService;
 
   const LOGIN_URL = AUTH_ENDPOINTS.LOGIN;
   const REFRESH_URL = AUTH_ENDPOINTS.REFRESH_TOKEN;
@@ -37,7 +36,6 @@ describe('AuthService', () => {
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    cookieService = TestBed.inject(CookieService);
     spyOn(sessionStorage, 'setItem');
     spyOn(sessionStorage, 'getItem').and.returnValue(null);
     spyOn(sessionStorage, 'removeItem');

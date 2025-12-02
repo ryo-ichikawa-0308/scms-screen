@@ -68,17 +68,17 @@ describe('ServiceDetailComponent', () => {
   });
 
   describe('init', () => {
-    it('✅ コンポーネントが正常に作成されること', () => {
+    it('コンポーネントが正常に作成されること', () => {
       expect(component).toBeTruthy();
     });
 
-    it('✅ 初期化時にサービスIDに基づいて詳細データが取得されること', () => {
+    it('初期化時にサービスIDに基づいて詳細データが取得されること', () => {
       expect(userServicesService.getServiceDetail).toHaveBeenCalledWith(mockDialogData.serviceId);
       expect(component.detail()).toEqual(mockServiceDetail);
       expect(component.isLoading()).toBeFalse();
     });
 
-    it('✅ orderQuantity の初期値が 1 であること', () => {
+    it('orderQuantity の初期値が 1 であること', () => {
       expect(component.orderQuantity).toBe(1);
     });
   });
@@ -91,7 +91,7 @@ describe('ServiceDetailComponent', () => {
     });
 
     describe('正常系', () => {
-      it('✅ 契約APIが成功したとき、成功メッセージが表示され、isContractSuccessがtrueになること', fakeAsync(() => {
+      it('契約APIが成功したとき、成功メッセージが表示され、isContractSuccessがtrueになること', fakeAsync(() => {
         contractsService.executeContract.and.returnValue(of(mockContractId).pipe(delay(0)));
         component.executeContract();
         fixture.detectChanges();
@@ -106,7 +106,7 @@ describe('ServiceDetailComponent', () => {
       }));
     });
     describe('異常系', () => {
-      it('❌ 契約APIが失敗したとき、エラーメッセージが表示され、isProcessingがfalseに戻ること',fakeAsync( () => {
+      it('契約APIが失敗したとき、エラーメッセージが表示され、isProcessingがfalseに戻ること',fakeAsync( () => {
         contractsService.executeContract.and.returnValue(throwError(() => new Error('API Error')));
         component.executeContract();
         tick();
@@ -123,7 +123,7 @@ describe('ServiceDetailComponent', () => {
       fixture.detectChanges();
       contractsService.executeContract.calls.reset();
     });
-    it('⚠️ 詳細データがない場合、契約APIが呼ばれないこと', () => {
+    it('詳細データがない場合、契約APIが呼ばれないこと', () => {
       component.detail.set(undefined);
       component.executeContract();
 
@@ -131,7 +131,7 @@ describe('ServiceDetailComponent', () => {
       expect(component.isProcessing()).toBeFalse();
     });
 
-    it('⚠️ 注文数が不正な場合（0以下）、契約APIが呼ばれないこと', () => {
+    it('注文数が不正な場合（0以下）、契約APIが呼ばれないこと', () => {
       component.orderQuantity = 0;
       component.detail.set(mockServiceDetail);
       component.executeContract();
@@ -140,7 +140,7 @@ describe('ServiceDetailComponent', () => {
       expect(component.isProcessing()).toBeFalse();
     });
 
-    it('⚠️ 注文数が在庫を超える場合、契約APIが呼ばれないこど', () => {
+    it('注文数が在庫を超える場合、契約APIが呼ばれないこど', () => {
       component.orderQuantity = 100; // 在庫5に対して100
       component.detail.set(mockServiceDetail);
       component.executeContract();

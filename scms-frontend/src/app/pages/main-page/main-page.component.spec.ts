@@ -63,23 +63,23 @@ describe('MainPageComponent', () => {
     mockAuthService.logout.calls.reset();
   });
 
-  it('✅ コンポーネントが正常に作成されること', () => {
+  it('コンポーネントが正常に作成されること', () => {
     expect(component).toBeTruthy();
   });
 
   describe('logout', () => {
-    it('✅ logout() が呼ばれたとき、AuthService.logout() が呼ばれること', () => {
+    it('logout() が呼ばれたとき、AuthService.logout() が呼ばれること', () => {
       component.logout();
       expect(authService.logout).toHaveBeenCalledTimes(1);
     });
 
-    it('✅ logout() が呼ばれたとき、ログイン画面へ遷移すること', () => {
+    it('logout() が呼ばれたとき、ログイン画面へ遷移すること', () => {
       component.logout();
       expect(router.navigate).toHaveBeenCalledWith(['/login']);
     });
   });
 
-  it('✅ ツールバーのログアウトボタンがクリックされたとき、logout() メソッドが呼ばれること', () => {
+  it('ツールバーのログアウトボタンがクリックされたとき、logout() メソッドが呼ばれること', () => {
     spyOn(component, 'logout');
     const logoutButton = fixture.debugElement.query(By.css('mat-toolbar button:last-child'));
 

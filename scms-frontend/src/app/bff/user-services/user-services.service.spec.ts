@@ -1,5 +1,3 @@
-// user-services.service.spec.ts
-
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { UserServicesService } from './user-services.service';
@@ -69,9 +67,6 @@ describe('UserServicesService', () => {
     httpMock.verify();
   });
 
-  // ====================================================================================================
-  // UserServicesService > getServiceList()
-  // ====================================================================================================
   describe('getServiceList', () => {
     const query = 'testService';
     const pageIndex = 0;
@@ -82,9 +77,6 @@ describe('UserServicesService', () => {
       limit: pageSize,
     };
 
-    // ----------------------------------------------------------------------------------------------------
-    // getServiceList() > 正常系: サービス一覧が取得できる
-    // ----------------------------------------------------------------------------------------------------
     it('正常系: API成功時、PaginatedResponseの形式にデータを変換して返すこと', (done) => {
       service.getServiceList(query, pageIndex, pageSize).subscribe((response) => {
         expect(response).toEqual(MOCK_PAGINATED_RESPONSE);
@@ -96,10 +88,6 @@ describe('UserServicesService', () => {
       expect(req.request.body).toEqual(expectedPayload);
       req.flush(MOCK_API_RESPONSE);
     });
-
-    // ----------------------------------------------------------------------------------------------------
-    // getServiceList() > 異常系: APIエラーが発生した場合
-    // ----------------------------------------------------------------------------------------------------
     it('異常系: API失敗時、空のPaginatedResponseが返され、SnackBarが表示されること', (done) => {
       service.getServiceList(query, pageIndex, pageSize).subscribe((response) => {
         expect(response.data.length).toBe(0);
@@ -115,17 +103,9 @@ describe('UserServicesService', () => {
       req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
     });
   });
-
-  // ====================================================================================================
-  // UserServicesService > getServiceDetail()
-  // ====================================================================================================
   describe('getServiceDetail', () => {
     const serviceId = 's101';
     const detailUrl = `${DETAIL_BASE_URL}/${serviceId}`;
-
-    // ----------------------------------------------------------------------------------------------------
-    // getServiceDetail() > 正常系: サービス詳細が取得できる
-    // ----------------------------------------------------------------------------------------------------
     it('正常系: サービスIDを指定して詳細データが取得できること', (done) => {
       service.getServiceDetail(serviceId).subscribe((detail) => {
         expect(detail).toEqual(MOCK_SERVICE);
@@ -135,10 +115,6 @@ describe('UserServicesService', () => {
       expect(req.request.method).toBe('GET');
       req.flush(MOCK_SERVICE);
     });
-
-    // ----------------------------------------------------------------------------------------------------
-    // getServiceDetail() > 異常系: APIエラーが発生した場合
-    // ----------------------------------------------------------------------------------------------------
     it('異常系: API失敗時、undefinedが返され、SnackBarが表示されること', (done) => {
       service.getServiceDetail(serviceId).subscribe((detail) => {
         expect(detail).toBeUndefined();

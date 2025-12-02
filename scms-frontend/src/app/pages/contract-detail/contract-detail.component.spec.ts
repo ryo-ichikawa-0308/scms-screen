@@ -58,22 +58,22 @@ describe('ContractDetailComponent', () => {
       beforeEach(fakeAsync(() => {
         tick();
       }));
-      it('✅ コンポーネントが正常に作成されること', () => {
+      it('コンポーネントが正常に作成されること', () => {
         expect(component).toBeTruthy();
       });
 
-      it('✅ 初期化時に契約IDに基づいて詳細データが取得されること', fakeAsync(() => {
+      it('初期化時に契約IDに基づいて詳細データが取得されること', fakeAsync(() => {
         expect(contractsService.getContractDetail).toHaveBeenCalledWith(mockDialogData.contractId);
         expect(component.detail()).toEqual(mockContractDetail);
         expect(component.isLoading()).toBeFalse();
       }));
 
-      it('✅ データ取得成功時、合計金額が正しく計算されること', fakeAsync(() => {
+      it('データ取得成功時、合計金額が正しく計算されること', fakeAsync(() => {
         expect(component.total()).toBe(3000);
       }));
     });
     describe('異常系', () => {
-      it('✅ データ取得に失敗した場合、detail() が undefined になり、isLoading が false になること', fakeAsync(() => {
+      it('データ取得に失敗した場合、detail() が undefined になり、isLoading が false になること', fakeAsync(() => {
         contractsService.getContractDetail.and.returnValue(of(undefined));
         component.fetchContractDetail(mockDialogData.contractId);
         tick();
@@ -96,7 +96,7 @@ describe('ContractDetailComponent', () => {
     }));
 
     describe('正常系', () => {
-      it('✅ 解約APIが成功したとき、isCancellationSuccess が true になり、メッセージが表示されること', fakeAsync(() => {
+      it('解約APIが成功したとき、isCancellationSuccess が true になり、メッセージが表示されること', fakeAsync(() => {
         contractsService.executeCancellation.and.returnValue(of(undefined).pipe(delay(0)));
         component.executeCancellation();
         fixture.detectChanges();
@@ -110,7 +110,7 @@ describe('ContractDetailComponent', () => {
       }));
     });
     describe('異常系', () => {
-      it('❌ 解約APIが失敗したとき、エラーメッセージが表示され、isProcessingがfalseに戻ること', fakeAsync(() => {
+      it('解約APIが失敗したとき、エラーメッセージが表示され、isProcessingがfalseに戻ること', fakeAsync(() => {
         contractsService.executeCancellation.and.returnValue(throwError(() => new Error('Cancel Error')));
         component.executeCancellation();
         tick();
@@ -118,7 +118,7 @@ describe('ContractDetailComponent', () => {
         expect(component.isCancellationSuccess()).toBeFalse();
         expect(component.cancellationMessage()).toContain('解約に失敗しました');
       }));
-      it('⚠️ detail() が undefined の場合、解約APIが呼ばれないこと', () => {
+      it('detail() が undefined の場合、解約APIが呼ばれないこと', () => {
         component.detail.set(undefined);
         component.executeCancellation();
 
@@ -128,7 +128,7 @@ describe('ContractDetailComponent', () => {
     });
   });
   describe('親画面連携', () => {
-    it('✅ close() が呼ばれたとき、MatDialogRef.closeが呼ばれること', () => {
+    it('close() が呼ばれたとき、MatDialogRef.closeが呼ばれること', () => {
       component.dialogRef.close();
       expect(mockMatDialogRef.close).toHaveBeenCalled();
     });

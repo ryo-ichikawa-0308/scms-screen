@@ -45,10 +45,10 @@ describe('LoginComponent', () => {
     mockRouter.navigate.calls.reset();
   });
   describe('init', () => {
-    it('✅ コンポーネントが正常に作成されること', () => {
+    it('コンポーネントが正常に作成されること', () => {
       expect(component).toBeTruthy();
     });
-    it('✅ 初期状態でフォーム入力値とエラーメッセージが空であること', () => {
+    it('初期状態でフォーム入力値とエラーメッセージが空であること', () => {
       expect(component.email).toBe('');
       expect(component.password).toBe('');
       expect(component.errorMessage).toBeNull();
@@ -59,7 +59,7 @@ describe('LoginComponent', () => {
   // 2. バリデーションのテスト (簡易バリデーション)
   // -------------------------------------------------------------------------
   describe('バリデーション', () => {
-    it('⚠️ ユーザーIDが空の場合、エラーメッセージが表示され、ログインAPIが呼ばれないこと', () => {
+    it('ユーザーIDが空の場合、エラーメッセージが表示され、ログインAPIが呼ばれないこと', () => {
       component.email = '';
       component.password = 'validPassword';
 
@@ -72,7 +72,7 @@ describe('LoginComponent', () => {
       expect(component.isLoading).toBeFalse();
     });
 
-    it('⚠️ パスワードが空の場合、エラーメッセージが表示され、ログインAPIが呼ばれないこと', () => {
+    it('パスワードが空の場合、エラーメッセージが表示され、ログインAPIが呼ばれないこと', () => {
       component.email = 'test@example.com';
       component.password = '';
 
@@ -96,7 +96,7 @@ describe('LoginComponent', () => {
       component.password = VALID_PASSWORD;
     });
     describe('正常系', () => {
-      it('✅ ログイン成功時、ローディングが解除され、サービス一覧画面へ遷移すること', fakeAsync(() => {
+      it('ログイン成功時、ローディングが解除され、サービス一覧画面へ遷移すること', fakeAsync(() => {
         authService.login.and.returnValue(of({ id: '', name: '', token: { accessToken: '', expiresIn: 0 } }).pipe(delay(0)));
         component.handleLogin();
         expect(component.isLoading).toBeTrue();
@@ -112,7 +112,7 @@ describe('LoginComponent', () => {
       }));
     });
     describe('異常系', () => {
-      it('❌ ログインAPIが401エラーを返した場合、エラーメッセージが表示され、遷移しないこと', fakeAsync(() => {
+      it('ログインAPIが401エラーを返した場合、エラーメッセージが表示され、遷移しないこと', fakeAsync(() => {
         const errorResponse = new HttpErrorResponse({
           status: 401,
           statusText: 'Unauthorized',
@@ -131,7 +131,7 @@ describe('LoginComponent', () => {
         expect(component.isError).toBeTrue();
       }));
 
-      it('❌ ログインAPIが500エラーを返した場合、一般エラーメッセージが表示され、遷移しないこと', fakeAsync(() => {
+      it('ログインAPIが500エラーを返した場合、一般エラーメッセージが表示され、遷移しないこと', fakeAsync(() => {
         const errorResponse = new HttpErrorResponse({
           status: 500,
           statusText: 'Internal Server Error',

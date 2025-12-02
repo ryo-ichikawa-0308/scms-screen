@@ -100,7 +100,7 @@ describe('ContractListComponent', () => {
 
   describe('fetchData', () => {
     describe('正常系', () => {
-      it('✅ コンポーネント作成時に契約一覧が取得されること', fakeAsync(() => {
+      it('コンポーネント作成時に契約一覧が取得されること', fakeAsync(() => {
         component.fetchData();
         tick();
         expect(component.dataSource()).toEqual(MOCK_CONTRACT_LIST);
@@ -109,7 +109,7 @@ describe('ContractListComponent', () => {
       }));
     });
     describe('異常系', () => {
-      it('✅ データ取得に失敗した場合、SnackBarが表示され、データが空になること', fakeAsync(() => {
+      it('データ取得に失敗した場合、SnackBarが表示され、データが空になること', fakeAsync(() => {
         contractsService.getContractList.and.returnValue(throwError(() => new Error('API Error')));
         component.fetchData();
         expect(contractsService.getContractList).toHaveBeenCalled();
@@ -125,7 +125,7 @@ describe('ContractListComponent', () => {
     });
   });
   describe('search', () => {
-    it('✅ search() が呼ばれると、currentPageがリセットされ、fetchDataが呼ばれること', fakeAsync(() => {
+    it('search() が呼ばれると、currentPageがリセットされ、fetchDataが呼ばれること', fakeAsync(() => {
       component.searchQuery = 'NewQuery';
       component.currentPage.set(5); // 現在のページをリセット対象のページとは別の値に設定
       contractsService.getContractList.calls.reset(); // 実行回数をリセット
@@ -141,7 +141,7 @@ describe('ContractListComponent', () => {
       );
     }));
 
-    it('✅ handlePageEvent() が呼ばれると、新しいページ情報でfetchDataが呼ばれること', fakeAsync(() => {
+    it('handlePageEvent() が呼ばれると、新しいページ情報でfetchDataが呼ばれること', fakeAsync(() => {
       contractsService.getContractList.calls.reset();
 
       const mockPageEvent: PageEvent = {
@@ -158,7 +158,7 @@ describe('ContractListComponent', () => {
   });
 
   describe('openDetail', () => {
-    it('✅ openDetail() が呼ばれたとき、MatDialog.openが呼ばれること', () => {
+    it('openDetail() が呼ばれたとき、MatDialog.openが呼ばれること', () => {
       const contractId = 'test-contract-id';
       component.openDetail(contractId);
       expect(mockMatDialog.open).toHaveBeenCalledWith(ContractDetailComponent, {
@@ -167,7 +167,7 @@ describe('ContractListComponent', () => {
         maxWidth: '500px',
       });
     });
-    it('✅ 詳細画面クローズ後、fetchDataが再実行されること', fakeAsync(() => {
+    it('詳細画面クローズ後、fetchDataが再実行されること', fakeAsync(() => {
       const contractId = 'test-contract-id';
       contractsService.getContractList.calls.reset();
       component.openDetail(contractId);
