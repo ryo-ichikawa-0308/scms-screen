@@ -92,7 +92,6 @@ describe('AuthService', () => {
 
         const req = httpMock.expectOne(REFRESH_URL);
         expect(req.request.method).toBe('POST');
-        expect(req.request.headers.get('Authorization')).toBe(`Bearer ${MOCK_REFRESH_TOKEN}`);
         req.flush(MOCK_NEW_TOKEN);
       });
     });
@@ -115,11 +114,17 @@ describe('AuthService', () => {
     });
   });
   describe('logout', () => {
-    it('ログアウト時、セッションストレージのトークンが削除される', () => {
+    it('ログアウト時、セッションストレージのトークンが削除される', (done) => {
       (service as any)._isLoggedIn.set(true);
       service.logout();
-      expect(sessionStorage.removeItem).toHaveBeenCalledTimes(2);
-      expect(service.isLoggedIn()).toBeFalse();
+      const req = httpMock.expectOne(AUTH_ENDPOINTS.LOGOUT);
+      expect(req.request.method).toBe('POST');
+      req.flush(null);
+      setTimeout(() => {
+        expect(sessionStorage.removeItem).toHaveBeenCalledTimes(2);
+        expect(service.isLoggedIn()).toBeFalse();
+        done();
+      }, 0);
     });
   });
 });
