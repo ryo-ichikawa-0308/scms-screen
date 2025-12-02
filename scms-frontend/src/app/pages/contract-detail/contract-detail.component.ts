@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 
 import { ContractsService } from 'src/app/bff/contracts/contracts.service';
 import { ContractDetail } from 'src/app/models/api.model';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { DecimalPipe } from '@angular/common';
 
 @Component({

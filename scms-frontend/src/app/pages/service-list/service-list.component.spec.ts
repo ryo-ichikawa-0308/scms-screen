@@ -1,9 +1,9 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ServiceListComponent } from './service-list.component';
 import { UserServicesService } from 'src/app/bff/user-services/user-services.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { ServiceDetail, PaginatedResponse } from 'src/app/models/api.model';
 import { PageEvent } from '@angular/material/paginator';
 import { ServiceDetailComponent } from '../service-detail/service-detail.component';
@@ -12,34 +12,52 @@ describe('ServiceListComponent', () => {
   let fixture: ComponentFixture<ServiceListComponent>;
   let mockUserService: jasmine.SpyObj<UserServicesService>;
   let mockDialog: jasmine.SpyObj<MatDialog>;
-  let mockDialogRef: jasmine.SpyObj<MatDialogRef<ServiceDetailComponent>>;
+  let dialogCloseSubject: Subject<any>;
 
   const MOCK_SERVICE_DETAIL: ServiceDetail = {
-    id: 's1', usersName: 'Provider A', servicesId: 'idA', name: 'Service X',
-    description: 'Desc', price: 100, stock: 50, unit: 'GB'
+    id: 's1',
+    usersName: 'Provider A',
+    servicesId: 'idA',
+    name: 'Service X',
+    description: 'Desc',
+    price: 100,
+    stock: 50,
+    unit: 'GB',
   };
   const MOCK_PAGINATED_RESPONSE: PaginatedResponse<ServiceDetail> = {
-    totalRecords: 1, totalPages: 1, currentPage: 0, offset: 0, limit: 10,
-    data: [MOCK_SERVICE_DETAIL]
+    totalRecords: 1,
+    totalPages: 1,
+    currentPage: 0,
+    offset: 0,
+    limit: 10,
+    data: [MOCK_SERVICE_DETAIL],
   };
 
   beforeEach(async () => {
-    mockUserService = jasmine.createSpyObj('UserServicesService', ['getServiceList', 'getServiceDetail']);
+    dialogCloseSubject = new Subject<any>();
+    mockUserService = jasmine.createSpyObj('UserServicesService', [
+      'getServiceList',
+      'getServiceDetail',
+    ]);
     mockDialog = jasmine.createSpyObj('MatDialog', ['open']);
-    mockDialogRef = jasmine.createSpyObj('ServiceDetailComponent', ['fetchServiceDetail']);
 
     await TestBed.configureTestingModule({
       imports: [ServiceListComponent],
       providers: [
         { provide: UserServicesService, useValue: mockUserService },
         { provide: MatDialog, useValue: mockDialog },
-        { provide: MatSnackBar, useValue: { open: () => { } } },
+        { provide: MatSnackBar, useValue: { open: () => {} } },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(ServiceListComponent, { remove: { imports: [MatDialogModule] } })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ServiceListComponent);
     component = fixture.componentInstance;
-    mockDialog.open.and.returnValue(mockDialogRef);
+    mockDialog.open.and.returnValue({
+      afterClosed: () => dialogCloseSubject.asObservable(),
+      close: jasmine.createSpy('close'),
+    } as unknown as MatDialogRef<ServiceDetailComponent>);
     mockUserService.getServiceList.and.returnValue(of(MOCK_PAGINATED_RESPONSE));
     mockUserService.getServiceDetail.and.returnValue(of(MOCK_SERVICE_DETAIL));
     fixture.detectChanges();
@@ -93,12 +111,28 @@ describe('ServiceListComponent', () => {
       }));
       it('サービスIDを渡すとMatDialogが開かれ、ダイアログにIDが渡されること', () => {
         const testServiceId = 'test-id-123';
-        component.openDetail(testServiceId);
-
-        expect(mockDialog.open).toHaveBeenCalledTimes(1);
-        const args = mockDialog.open.calls.mostRecent().args;
-        expect(args[1]?.data).toEqual({ serviceId: testServiceId });
+        component.openDetail(testServiceId);            
+        expect(mockDialog.open).toHaveBeenCalledWith(ServiceDetailComponent, {
+          data: { serviceId: testServiceId },
+          width: '90%',
+          maxWidth: '500px',
+        });
       });
     });
+    it('詳細画面クローズ後、fetchDataが再実行されること', fakeAsync(() => {
+      const contractId = 'test-contract-id';
+      mockUserService.getServiceList.calls.reset();
+      component.openDetail(contractId);
+      dialogCloseSubject.next(true);
+      dialogCloseSubject.complete();
+      tick();
+      expect(mockUserService.getServiceList).toHaveBeenCalledTimes(1);
+      expect(mockUserService.getServiceList).toHaveBeenCalledWith(
+        component.searchQuery,
+        component.currentPage(),
+        component.pageSize(),
+      );
+    }));
+
   });
 });

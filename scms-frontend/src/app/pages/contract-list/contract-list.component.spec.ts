@@ -3,7 +3,7 @@ import { ContractListComponent } from './contract-list.component';
 import { ContractsService } from 'src/app/bff/contracts/contracts.service';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { ContractDetail, PaginatedResponse } from 'src/app/models/api.model';
 import { PageEvent } from '@angular/material/paginator';
 import { ContractDetailComponent } from 'src/app/pages/contract-detail/contract-detail.component';
@@ -53,9 +53,7 @@ const mockContractsService = {
 };
 
 // MatDialogのモック
-const mockMatDialog = {
-  open: jasmine.createSpy('open'),
-};
+const mockMatDialog = { open: jasmine.createSpy('open') };
 
 // MatSnackBarのモック
 const mockMatSnackBar = {
@@ -66,21 +64,28 @@ describe('ContractListComponent', () => {
   let component: ContractListComponent;
   let fixture: ComponentFixture<ContractListComponent>;
   let contractsService: jasmine.SpyObj<ContractsService>;
+  let dialogCloseSubject: Subject<any>;
 
   beforeEach(async () => {
+    dialogCloseSubject = new Subject<any>();
+    mockMatDialog.open.and.returnValue({
+      afterClosed: () => dialogCloseSubject.asObservable(),
+      close: jasmine.createSpy('close'),
+    } as unknown as MatDialogRef<ContractDetailComponent>);
     await TestBed.configureTestingModule({
-      imports: [ContractListComponent, MatDialogModule],
+      imports: [ContractListComponent],
       providers: [
         { provide: ContractsService, useValue: mockContractsService },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: MatSnackBar, useValue: mockMatSnackBar },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(ContractListComponent, { remove: { imports: [MatDialogModule] } })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ContractListComponent);
     component = fixture.componentInstance;
     contractsService = TestBed.inject(ContractsService) as jasmine.SpyObj<ContractsService>;
-
     contractsService.getContractList.and.returnValue(of(MOCK_PAGINATED_RESPONSE));
     contractsService.getContractDetail.and.returnValue(of(MOCK_CONTRACT_LIST[0]));
     fixture.detectChanges();
@@ -89,6 +94,8 @@ describe('ContractListComponent', () => {
   afterEach(() => {
     contractsService.getContractList.calls.reset();
     contractsService.getContractDetail.calls.reset();
+    mockMatDialog.open.calls.reset();
+    mockMatSnackBar.open.calls.reset();
   });
 
   describe('fetchData', () => {
@@ -157,14 +164,15 @@ describe('ContractListComponent', () => {
       expect(mockMatDialog.open).toHaveBeenCalledWith(ContractDetailComponent, {
         data: { contractId: contractId },
         width: '90%',
-        maxWidth: '800px',
+        maxWidth: '500px',
       });
     });
-
     it('✅ 詳細画面クローズ後、fetchDataが再実行されること', fakeAsync(() => {
       const contractId = 'test-contract-id';
       contractsService.getContractList.calls.reset();
       component.openDetail(contractId);
+      dialogCloseSubject.next(true);
+      dialogCloseSubject.complete();
       tick();
       expect(contractsService.getContractList).toHaveBeenCalledTimes(1);
       expect(contractsService.getContractList).toHaveBeenCalledWith(
