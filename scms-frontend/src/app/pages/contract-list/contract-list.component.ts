@@ -115,7 +115,7 @@ export class ContractListComponent implements OnDestroy {
    */
   openDetail(contractId: string): void {
     // 1. ダイアログを開く
-    const dialogRef =     this.dialog.open(ContractDetailComponent, {
+    const dialogRef = this.dialog.open(ContractDetailComponent, {
       data: { contractId: contractId },
       width: '90%',
       maxWidth: '500px',
