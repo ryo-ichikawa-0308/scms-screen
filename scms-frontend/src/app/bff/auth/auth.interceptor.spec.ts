@@ -107,7 +107,6 @@ describe('AuthInterceptor', () => {
       authService.refreshToken.and.returnValue(
         throwError(() => new HttpErrorResponse({ status: 400 })),
       );
-
       httpClient.get(TEST_URL).subscribe({
         next: () => fail('リクエストは失敗するべきです'),
         error: (error) => {
@@ -117,12 +116,9 @@ describe('AuthInterceptor', () => {
           done();
         },
       });
-
-      // 1. 最初のHTTPリクエスト (401を返す)
+      // 最初のHTTPリクエスト (401を返す)
       let initialReq = httpMock.expectOne(TEST_URL);
       initialReq.flush(null, { status: 401, statusText: 'Unauthorized' });
-
-      // 2. リフレッシュAPIが失敗したため、リトライは発生せず、Observableチェーンがエラーで終了する
     });
   });
 });

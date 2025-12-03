@@ -1,10 +1,9 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import {
   ACCESS_TOKEN_EXPIRES_KEY,
   ACCESS_TOKEN_KEY,
-  REFRESH_TOKEN_KEY,
   AUTH_ENDPOINTS,
 } from 'src/app/bff/constants/constants';
 import { AccessToken, LoginRequest, LoginResponse, RefreshResponse } from 'src/app/models/api.model';

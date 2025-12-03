@@ -55,9 +55,6 @@ describe('LoginComponent', () => {
       expect(component.isLoading).toBeFalse();
     });
   });
-  // -------------------------------------------------------------------------
-  // 2. バリデーションのテスト (簡易バリデーション)
-  // -------------------------------------------------------------------------
   describe('バリデーション', () => {
     it('ユーザーIDが空の場合、エラーメッセージが表示され、ログインAPIが呼ばれないこと', () => {
       component.email = '';
@@ -65,7 +62,6 @@ describe('LoginComponent', () => {
 
       component.handleLogin();
 
-      // 検証
       expect(authService.login).not.toHaveBeenCalled();
       expect(component.errorMessage).toBe('ユーザーIDとパスワードを入力してください。');
       expect(component.isError).toBeTrue();
@@ -78,7 +74,6 @@ describe('LoginComponent', () => {
 
       component.handleLogin();
 
-      // 検証
       expect(authService.login).not.toHaveBeenCalled();
       expect(component.errorMessage).toBe('ユーザーIDとパスワードを入力してください。');
       expect(component.isError).toBeTrue();
@@ -91,7 +86,6 @@ describe('LoginComponent', () => {
     const LOGIN_SUCCESS_ROUTE = ['/main-page/service-list'];
 
     beforeEach(() => {
-      // 有効な入力値を設定
       component.email = VALID_EMAIL;
       component.password = VALID_PASSWORD;
     });

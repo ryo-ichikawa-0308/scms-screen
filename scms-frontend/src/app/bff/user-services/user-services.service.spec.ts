@@ -4,7 +4,7 @@ import { UserServicesService } from './user-services.service';
 import { USER_SERVICE_ENDPOINTS } from '../constants/constants';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ServiceDetail, PaginatedResponse, ServiceListApiResponse } from 'src/app/models/api.model';
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 describe('UserServicesService', () => {
@@ -12,11 +12,9 @@ describe('UserServicesService', () => {
   let httpMock: HttpTestingController;
   let snackBar: MatSnackBar;
 
-  // エンドポイントURLの定義
   const LIST_URL = USER_SERVICE_ENDPOINTS.LIST;
   const DETAIL_BASE_URL = USER_SERVICE_ENDPOINTS.DETAIL;
 
-  // モックデータの定義
   const MOCK_SERVICE: ServiceDetail = {
     id: 's1',
     usersName: 'Provider A',
@@ -81,6 +79,7 @@ describe('UserServicesService', () => {
       service.getServiceList(query, pageIndex, pageSize).subscribe((response) => {
         expect(response).toEqual(MOCK_PAGINATED_RESPONSE);
         expect(response.data.length).toBe(1);
+           expect(response.data[0].id).toBe('s1');
         done();
       });
       const req = httpMock.expectOne(LIST_URL);
@@ -97,8 +96,6 @@ describe('UserServicesService', () => {
         });
         done();
       });
-
-      // 検証: API呼び出し（500 Internal Server Error）
       const req = httpMock.expectOne(LIST_URL);
       req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
     });
