@@ -1,22 +1,35 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import {
-  HTTP_INTERCEPTORS,
   HttpClient,
   HttpErrorResponse,
   provideHttpClient,
+  withInterceptors,
 } from '@angular/common/http';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { RefreshResponse } from 'src/app/models/api.model';
+
+const mockAuthService = {
+  getAccessToken: jasmine.createSpy('getAccessToken').and.returnValue('valid_token'),
+  logout: jasmine.createSpy('logout'),
+  getIsRefreshing: jasmine.createSpy('getIsRefreshing').and.returnValue(false),
+  isAccessTokenExpired: jasmine.createSpy('isAccessTokenExpired').and.returnValue(false),
+  refreshToken: jasmine.createSpy('refreshToken'),
+  getRefreshTokenSubject: jasmine.createSpy('getRefreshTokenSubject').and.returnValue(new Subject<string>()),
+};
+
+const mockRouter = {
+  navigate: jasmine.createSpy('navigate'),
+};
 
 describe('AuthInterceptor', () => {
   let httpMock: HttpTestingController;
   let httpClient: HttpClient;
-  let authService: AuthService;
-  let router: Router;
+  let authService: typeof mockAuthService;
+  let router: typeof mockRouter;
 
   const MOCK_TOKEN = 'valid_token';
   const REFRESH_TOKEN_RESPONSE: RefreshResponse = {
@@ -27,27 +40,24 @@ describe('AuthInterceptor', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
-        AuthService,
-        {
-          provide: HTTP_INTERCEPTORS,
-          useValue: authInterceptor,
-          multi: true,
-        },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: Router, useValue: mockRouter },
       ],
     });
 
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);
-    authService = TestBed.inject(AuthService);
-    router = TestBed.inject(Router);
+    authService = TestBed.inject(AuthService) as unknown as typeof mockAuthService; 
+    router = TestBed.inject(Router) as unknown as typeof mockRouter; 
 
-    spyOn(authService, 'getAccessToken').and.returnValue(MOCK_TOKEN);
-    spyOn(authService, 'logout');
-    spyOn(authService, 'getIsRefreshing').and.returnValue(false);
-    spyOn(authService, 'isAccessTokenExpired').and.returnValue(false); 
+    mockAuthService.getAccessToken.and.returnValue(MOCK_TOKEN);
+    mockAuthService.getIsRefreshing.and.returnValue(false);
+    mockAuthService.isAccessTokenExpired.and.returnValue(false);
+    mockAuthService.logout.calls.reset();
+    mockAuthService.refreshToken.calls.reset();
+    mockRouter.navigate.calls.reset();
   });
 
   afterEach(() => {
@@ -67,15 +77,13 @@ describe('AuthInterceptor', () => {
 
   describe('401エラーからのリフレッシュ', () => {
     it('401エラーを受け取るとリフレッシュを実行し、元のリクエストを新しいトークンで再試行する', (done) => {
-      (authService.isAccessTokenExpired as jasmine.Spy).and.returnValue(true);
-      const refreshTokenSpy = spyOn(authService, 'refreshToken').and.returnValue(
-        of(REFRESH_TOKEN_RESPONSE),
-      );
+      authService.isAccessTokenExpired.and.returnValue(true);
+      authService.refreshToken.and.returnValue(of(REFRESH_TOKEN_RESPONSE));
 
       httpClient.get(TEST_URL).subscribe(
         (res) => {
           expect(res).toEqual({ data: 'retry_ok' });
-          expect(refreshTokenSpy).toHaveBeenCalledTimes(1);
+          expect(authService.refreshToken).toHaveBeenCalledTimes(1);
           done();
         },
         () => fail('リクエストが失敗しました'),
@@ -95,15 +103,15 @@ describe('AuthInterceptor', () => {
     });
 
     it('401エラーを受け取り、リフレッシュに失敗するとログアウト処理を行う', (done) => {
-      (authService.isAccessTokenExpired as jasmine.Spy).and.returnValue(true);
-      const refreshTokenSpy = spyOn(authService, 'refreshToken').and.returnValue(
+      authService.isAccessTokenExpired.and.returnValue(true);
+      authService.refreshToken.and.returnValue(
         throwError(() => new HttpErrorResponse({ status: 400 })),
       );
 
       httpClient.get(TEST_URL).subscribe({
         next: () => fail('リクエストは失敗するべきです'),
         error: (error) => {
-          expect(refreshTokenSpy).toHaveBeenCalledTimes(1);
+          expect(authService.refreshToken).toHaveBeenCalledTimes(1);
           expect(authService.logout).toHaveBeenCalled();
           expect(router.navigate).toHaveBeenCalledWith(['/login']);
           done();
