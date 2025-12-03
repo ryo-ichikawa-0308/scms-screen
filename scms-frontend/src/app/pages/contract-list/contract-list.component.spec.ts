@@ -127,20 +127,19 @@ describe('ContractListComponent', () => {
   describe('search', () => {
     it('search() が呼ばれると、currentPageがリセットされ、fetchDataが呼ばれること', fakeAsync(() => {
       component.searchQuery = 'NewQuery';
-      component.currentPage.set(5); // 現在のページをリセット対象のページとは別の値に設定
-      contractsService.getContractList.calls.reset(); // 実行回数をリセット
+      component.currentPage.set(5);
+      contractsService.getContractList.calls.reset();
       component.search(0); // 1ページ目を検索
       tick();
-      // currentPage が 0 に設定されること
       expect(component.currentPage()).toBe(0);
-      // 新しいクエリとページ情報でAPIが呼ばれること
       expect(contractsService.getContractList).toHaveBeenCalledWith(
         component.searchQuery,
         0,
         component.pageSize(),
       );
     }));
-
+  });
+  describe('handlePageEvent', () => {
     it('handlePageEvent() が呼ばれると、新しいページ情報でfetchDataが呼ばれること', fakeAsync(() => {
       contractsService.getContractList.calls.reset();
 
@@ -156,7 +155,6 @@ describe('ContractListComponent', () => {
       expect(contractsService.getContractList).toHaveBeenCalledWith(component.searchQuery, 2, 5);
     }));
   });
-
   describe('openDetail', () => {
     it('openDetail() が呼ばれたとき、MatDialog.openが呼ばれること', () => {
       const contractId = 'test-contract-id';

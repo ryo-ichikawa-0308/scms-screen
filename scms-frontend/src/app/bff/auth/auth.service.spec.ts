@@ -78,7 +78,6 @@ describe('AuthService', () => {
     });
   });
   describe('refreshToken', () => {
-    const MOCK_REFRESH_TOKEN = 'mock_refresh_token_from_cookie';
     const MOCK_NEW_TOKEN: RefreshResponse = { token: { accessToken: 'new_token_123', expiresIn: 3600 } };
     describe('正常系', () => {
       it('リフレッシュトークンが有効な場合、新しいアクセストークンを取得・保存する', (done) => {
@@ -105,7 +104,6 @@ describe('AuthService', () => {
           },
         });
 
-        // 検証: API呼び出し（400 Bad Request）
         const req = httpMock.expectOne(REFRESH_URL);
         req.flush('リフレッシュ失敗', { status: 400, statusText: 'Bad Request' });
       });

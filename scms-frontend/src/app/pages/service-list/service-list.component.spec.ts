@@ -102,7 +102,21 @@ describe('ServiceListComponent', () => {
       });
     });
   });
-
+describe('search', () => {
+      it('search() が呼ばれると、currentPageがリセットされ、fetchDataが呼ばれること', fakeAsync(() => {
+      component.searchQuery = 'NewQuery';
+      component.currentPage.set(5); // 現在のページをリセット対象のページとは別の値に設定
+      mockUserService.getServiceList.calls.reset();
+      component.search(0);
+      tick();
+      expect(component.currentPage()).toBe(0);
+      expect(mockUserService.getServiceList).toHaveBeenCalledWith(
+        component.searchQuery,
+        0,
+        component.pageSize(),
+      );
+    }));
+});
   describe('openDetail', () => {
     describe('正常系', () => {
       beforeEach(fakeAsync(() => {
@@ -133,6 +147,5 @@ describe('ServiceListComponent', () => {
         component.pageSize(),
       );
     }));
-
   });
 });

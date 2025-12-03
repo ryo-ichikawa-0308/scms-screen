@@ -149,4 +149,10 @@ describe('ServiceDetailComponent', () => {
       expect(component.isProcessing()).toBeFalse();
     });
   });
+  describe('親画面連携', () => {
+    it('close() が呼ばれたとき、MatDialogRef.closeが呼ばれること', () => {
+      component.dialogRef.close();
+      expect(mockMatDialogRef.close).toHaveBeenCalled();
+    });
+  });
 });
