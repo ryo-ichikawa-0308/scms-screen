@@ -1,0 +1,56 @@
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-left: 1rem;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.content {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #f4f4f4;
+  padding: 1rem;
+}
+
+.footer {
+  flex-shrink: 0;
+  background-color: #333;
+  color: white;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+/* mat-sidenav-contentが親コンテナ内の残りの高さを占有し、コンテンツがオーバーフローした場合にのみスクロールできるようにする */
+.mat-sidenav-content.main-content-area {
+  display: flex;
+  flex-direction: column;
+  /* Flex-Growを許可して高さを占有 */
+  flex-grow: 1;
+  /* ここで背景色を明確に定義し、テーマ変数による予期せぬ上書きを防ぐ */
+  background-color: #f9fafb !important; /* Tailwindのbg-gray-50を強制 */
+}
+
+/* mainタグにツールバーを除いた残りのスペースを埋める役割を与える */
+.mat-sidenav-content main {
+  /* flex: 1 1 auto が残りの領域を埋めるために非常に重要 */
+  flex: 1 1 auto;
+  overflow-y: auto; /* コンテンツが画面を超えた場合、スクロールを許可 */
+}
+
+/* mat-sidenav-containerは親要素の高さ (app-root) を完全に利用する */
+mat-sidenav-container {
+  height: 100%;
+}

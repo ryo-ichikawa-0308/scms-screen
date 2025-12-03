@@ -1,0 +1,75 @@
+.detail-card {
+    padding: 1rem;
+}
+
+.dialog-header {
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.dialog-content {
+    margin-top: 1rem;
+}
+
+.detail-info {
+    margin-bottom: 1rem;
+}
+
+.status-display {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.active-status {
+    color: #4caf50; /* Green */
+}
+.cancelled-status {
+    color: #f44336; /* Red */
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+}
+
+.message-box {
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    border: 1px solid;
+}
+
+.success-message {
+    background-color: #e8f5e9; /* Green lighten-5 */
+    color: #4caf50; /* Green */
+    border-color: #a5d6a7;
+}
+
+.error-message {
+    background-color: #ffebee; /* Red lighten-5 */
+    color: #f44336; /* Red */
+    border-color: #ef9a9a;
+}
+
+.loading-area {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
